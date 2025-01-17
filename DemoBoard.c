@@ -27,5 +27,140 @@ digitalWrite(ledout3, LOW);
 
 void loop() {
   // put your main code here, to run repeatedly:
+delay(150);
+digitalWrite(ledin1, HIGH);
+digitalWrite(ledin2, LOW);
+digitalWrite(ledin3, LOW);
+
+digitalWrite(ledout1, LOW);
+digitalWrite(ledout2, LOW);
+digitalWrite(ledout3, LOW);
+
+delay(500);
+digitalWrite(ledin1, LOW);
+digitalWrite(ledin2, HIGH);
+digitalWrite(ledin3, LOW);
+
+digitalWrite(ledout1, LOW);
+digitalWrite(ledout2, LOW);
+digitalWrite(ledout3, LOW);
+
+delay(500);
+digitalWrite(ledin1, LOW);
+digitalWrite(ledin2, LOW);
+digitalWrite(ledin3, HIGH);
+
+digitalWrite(ledout1, LOW);
+digitalWrite(ledout2, LOW);
+digitalWrite(ledout3, LOW);
+
+delay(500);
+digitalWrite(ledin1, HIGH);
+digitalWrite(ledin2, HIGH);
+digitalWrite(ledin3, HIGH);
+
+digitalWrite(ledout1, LOW);
+digitalWrite(ledout2, HIGH);
+digitalWrite(ledout3, HIGH);
+
+delay(500);
+digitalWrite(ledin1, HIGH);
+digitalWrite(ledin2, HIGH);
+digitalWrite(ledin3, HIGH);
+
+digitalWrite(ledout1, HIGH);
+digitalWrite(ledout2, LOW);
+digitalWrite(ledout3, HIGH);
+
+delay(500);
+digitalWrite(ledin1, HIGH);
+digitalWrite(ledin2, HIGH);
+digitalWrite(ledin3, HIGH);
+
+digitalWrite(ledout1, HIGH);
+digitalWrite(ledout2, HIGH);
+digitalWrite(ledout3, LOW);
+
+delay(150);
+digitalWrite(ledin1, HIGH);
+digitalWrite(ledin2, LOW);
+digitalWrite(ledin3, LOW);
+
+digitalWrite(ledout1, LOW);
+digitalWrite(ledout2, HIGH);
+digitalWrite(ledout3, HIGH);
+
+delay(150);
+digitalWrite(ledin1, HIGH);
+digitalWrite(ledin2, LOW);
+digitalWrite(ledin3, LOW);
+
+digitalWrite(ledout1, HIGH);
+digitalWrite(ledout2, LOW);
+digitalWrite(ledout3, HIGH);
+
+delay(150);
+digitalWrite(ledin1, HIGH);
+digitalWrite(ledin2, LOW);
+digitalWrite(ledin3, LOW);
+
+digitalWrite(ledout1, HIGH);
+digitalWrite(ledout2, HIGH);
+digitalWrite(ledout3, LOW);
+
+delay(150);
+digitalWrite(ledin1, LOW);
+digitalWrite(ledin2, HIGH);
+digitalWrite(ledin3, LOW);
+
+digitalWrite(ledout1, LOW);
+digitalWrite(ledout2, HIGH);
+digitalWrite(ledout3, HIGH);
+
+delay(150);
+digitalWrite(ledin1, LOW);
+digitalWrite(ledin2, HIGH);
+digitalWrite(ledin3, LOW);
+
+digitalWrite(ledout1, HIGH);
+digitalWrite(ledout2, LOW);
+digitalWrite(ledout3, HIGH);
+
+delay(150);
+digitalWrite(ledin1, LOW);
+digitalWrite(ledin2, HIGH);
+digitalWrite(ledin3, LOW);
+
+digitalWrite(ledout1, HIGH);
+digitalWrite(ledout2, HIGH);
+digitalWrite(ledout3, LOW);
+
+delay(150);
+digitalWrite(ledin1, LOW);
+digitalWrite(ledin2, LOW);
+digitalWrite(ledin3, HIGH);
+
+digitalWrite(ledout1, LOW);
+digitalWrite(ledout2, HIGH);
+digitalWrite(ledout3, HIGH);
+
+delay(150);
+digitalWrite(ledin1, LOW);
+digitalWrite(ledin2, LOW);
+digitalWrite(ledin3, HIGH);
+
+digitalWrite(ledout1, HIGH);
+digitalWrite(ledout2, LOW);
+digitalWrite(ledout3, HIGH);
+
+delay(150);
+digitalWrite(ledin1, LOW);
+digitalWrite(ledin2, LOW);
+digitalWrite(ledin3, HIGH);
+
+digitalWrite(ledout1, HIGH);
+digitalWrite(ledout2, HIGH);
+digitalWrite(ledout3, LOW);
+
 
 }
