@@ -161,6 +161,8 @@ def main():
 
 if __name__ == "__main__":
     main()
+"""Tämä koodi on Python ohjelmointikielessä. Koodi käyttää vain yksiulotteinen muisto (array). Koodi voi testata.
+Korjaamme myöhemmin Arduinon koodiksi kun kytkentäkaavio on valmis..."""
 
             
             
