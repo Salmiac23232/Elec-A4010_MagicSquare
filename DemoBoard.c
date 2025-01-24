@@ -15,13 +15,15 @@ const int button1 = 11;
 const int button2 = 12;
 const int button3 = 13;
 
-bool vala = false; 
-bool valb = false;
-bool valc = false;
+int val = false;
+int previousVal = val;
+int count = 0;
 
-bool val1 = false;
-bool val2 = false;
-bool val3 = false;
+int toggle = false;
+
+// potentiometer
+
+const int potent = A0;
 
 void updateMatrix(bool vala, bool valb , bool valc, bool val1, bool val2, bool val3){
   vala ? digitalWrite(ledin1, HIGH) : digitalWrite(ledin1, LOW);
@@ -36,6 +38,7 @@ void updateMatrix(bool vala, bool valb , bool valc, bool val1, bool val2, bool v
 
 
 void setup() {
+Serial.begin(9600);
   //Led config
 pinMode(ledin1, OUTPUT);
 pinMode(ledin2, OUTPUT);
@@ -64,28 +67,74 @@ digitalWrite(ledout3, HIGH);
 
 updateMatrix(1,1,1,0,1,1);
 
+}
+
+void animateCross(int speed){
+  updateMatrix(1,0,0,0,1,1); 
+  delay(speed);
+  updateMatrix(0,1,0,1,0,1);
+  delay(speed);
+  updateMatrix(0,0,1,1,1,0);
+  delay(speed);
+  updateMatrix(0,0,1,0,1,1);
+  delay(speed);
+  updateMatrix(1,0,0,1,1,0);
+  delay(speed);
 
 }
 
+void animateDiamond(int speed){
+  updateMatrix(0,1,0,0,1,1); 
+  delay(speed);
+  updateMatrix(0,0,1,1,0,1);
+  delay(speed);
+  updateMatrix(1,0,0,1,0,1);
+  delay(speed);
+  updateMatrix(0,1,0,1,1,0);
+  delay(speed);
+
+}
 
 
 void loop() {
 
-for (int i=50; 1>0; ){
-  updateMatrix(1,0,0,0,1,1); 
-  delay(i);
-  updateMatrix(0,1,0,1,0,1);
-  delay(i);
-  updateMatrix(0,0,1,1,1,0);
-  delay(i);
-  updateMatrix(0,0,1,0,1,1);
-  delay(i);
-  updateMatrix(1,0,0,1,1,0);
-  delay(i);
+
+updateMatrix(0,0,0,0,0,0); 
+
+val = digitalRead(buttonA);
+//val = digitalRead(buttonB);
+//val = digitalRead(buttonC);
+//Serial.println(digitalRead(button1));
+Serial.println(!digitalRead(buttonA));
+
+if (val != previousVal){
+previousVal = val;
+
+count++;
+if(count == 2){
+toggle = !toggle;
+count = 0;
+}
+
+}
+
+int sensorValue = analogRead(potent);
+if (toggle){
+animateCross(sensorValue);
+}
+else{
+animateDiamond(sensorValue);
+}
+
+
+
+/*for (int i=50; 1>0; ){
+
+  animateCross(i);
   if (i > 1){
     i--;
   }
-}
+}*/
 
 
 
