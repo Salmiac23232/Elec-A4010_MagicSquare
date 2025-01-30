@@ -15,17 +15,11 @@ const int button1 = 11;
 const int button2 = 12;
 const int button3 = 13;
 
-int val = false;
-int previousVal = val;
-int count = 0;
-
-int toggle = false;
-
 // potentiometer
 
 const int potent = A0;
 
-void updateMatrix(bool vala, bool valb , bool valc, bool val1, bool val2, bool val3){
+void updateMatrix(bool vala, bool valb, bool valc, bool val1, bool val2, bool val3) {
   vala ? digitalWrite(ledin1, HIGH) : digitalWrite(ledin1, LOW);
   valb ? digitalWrite(ledin2, HIGH) : digitalWrite(ledin2, LOW);
   valc ? digitalWrite(ledin3, HIGH) : digitalWrite(ledin3, LOW);
@@ -38,105 +32,68 @@ void updateMatrix(bool vala, bool valb , bool valc, bool val1, bool val2, bool v
 
 
 void setup() {
-Serial.begin(9600);
+  Serial.begin(9600);
   //Led config
-pinMode(ledin1, OUTPUT);
-pinMode(ledin2, OUTPUT);
-pinMode(ledin3, OUTPUT);
+  pinMode(ledin1, OUTPUT);
+  pinMode(ledin2, OUTPUT);
+  pinMode(ledin3, OUTPUT);
 
-pinMode(ledout1, OUTPUT);
-pinMode(ledout2, OUTPUT);
-pinMode(ledout3, OUTPUT);
+  pinMode(ledout1, OUTPUT);
+  pinMode(ledout2, OUTPUT);
+  pinMode(ledout3, OUTPUT);
 
-digitalWrite(ledin1, HIGH);
-digitalWrite(ledin2, HIGH);
-digitalWrite(ledin3, HIGH);
+  //Button config
+  pinMode(buttonA, OUTPUT);
+  pinMode(buttonB, OUTPUT);
+  pinMode(buttonC, OUTPUT);
 
-digitalWrite(ledout1, LOW);
-digitalWrite(ledout2, HIGH);
-digitalWrite(ledout3, HIGH);
+  pinMode(button1, INPUT);
+  pinMode(button2, INPUT);
+  pinMode(button3, INPUT);
 
- //Button config
- pinMode(buttonA, INPUT);
- pinMode(buttonB, INPUT);
- pinMode(buttonC, INPUT);
+  digitalWrite(buttonA, HIGH);
+  digitalWrite(buttonB, HIGH);
+  digitalWrite(buttonC, HIGH);
 
- pinMode(button1, INPUT);
- pinMode(button2, INPUT);
- pinMode(button3, INPUT);
-
-updateMatrix(1,1,1,0,1,1);
 
 }
 
-void animateCross(int speed){
-  updateMatrix(1,0,0,0,1,1); 
-  delay(speed);
-  updateMatrix(0,1,0,1,0,1);
-  delay(speed);
-  updateMatrix(0,0,1,1,1,0);
-  delay(speed);
-  updateMatrix(0,0,1,0,1,1);
-  delay(speed);
-  updateMatrix(1,0,0,1,1,0);
-  delay(speed);
-
+void readButtons(){
+  
 }
 
-void animateDiamond(int speed){
-  updateMatrix(0,1,0,0,1,1); 
-  delay(speed);
-  updateMatrix(0,0,1,1,0,1);
-  delay(speed);
-  updateMatrix(1,0,0,1,0,1);
-  delay(speed);
-  updateMatrix(0,1,0,1,1,0);
-  delay(speed);
+char = 0x01 << 2;  // 0000 0100 
 
+void animateCross(int speed) {
+  updateMatrix(1, 0, 0, 0, 1, 1);
+  delay(speed);
+  updateMatrix(0, 1, 0, 1, 0, 1);
+  delay(speed);
+  updateMatrix(0, 0, 1, 1, 1, 0);
+  delay(speed);
+  updateMatrix(0, 0, 1, 0, 1, 1);
+  delay(speed);
+  updateMatrix(1, 0, 0, 1, 1, 0);
+  delay(speed);
+}
+
+void animateDiamond(int speed) {
+  updateMatrix(0, 1, 0, 0, 1, 1);
+  delay(speed);
+  updateMatrix(0, 0, 1, 1, 0, 1);
+  delay(speed);
+  updateMatrix(1, 0, 0, 1, 0, 1);
+  delay(speed);
+  updateMatrix(0, 1, 0, 1, 1, 0);
+  delay(speed);
 }
 
 
 void loop() {
 
-
-updateMatrix(0,0,0,0,0,0); 
-
-val = digitalRead(buttonA);
-//val = digitalRead(buttonB);
-//val = digitalRead(buttonC);
-//Serial.println(digitalRead(button1));
-Serial.println(!digitalRead(buttonA));
-
-if (val != previousVal){
-previousVal = val;
-
-count++;
-if(count == 2){
-toggle = !toggle;
-count = 0;
-}
-
-}
-
-int sensorValue = analogRead(potent);
-if (toggle){
-animateCross(sensorValue);
-}
-else{
-animateDiamond(sensorValue);
-}
-
-
-
-/*for (int i=50; 1>0; ){
+  int i = analogRead(potent);
 
   animateCross(i);
-  if (i > 1){
-    i--;
-  }
-}*/
-
-
-
+  animateDiamond(i);
 
 }
