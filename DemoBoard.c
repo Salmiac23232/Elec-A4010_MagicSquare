@@ -57,13 +57,51 @@ void setup() {
 
 
 }
+int displayMatrix(int matrix[9]){
 
-void readButtons(){
-  
+
 }
 
-char = 0x01 << 2;  // 0000 0100 
+int readButtons(){
+  int matrix[9] = {0,0,0, 0,0,0, 0,0,0};
 
+  //read A column
+  digitalWrite(buttonA, HIGH);
+  digitalWrite(buttonB, LOW);
+  digitalWrite(buttonC, LOW);
+  delay(1);
+
+  matrix[0] = digitalRead(button1);
+  matrix[3] = digitalRead(button2);
+  matrix[6] = digitalRead(button3);
+
+  //read B column
+  digitalWrite(buttonA, LOW);
+  digitalWrite(buttonB, HIGH);
+  digitalWrite(buttonC, LOW);
+  delay(1);
+
+  matrix[1] = digitalRead(button1);
+  matrix[4] = digitalRead(button2);
+  matrix[7] = digitalRead(button3);
+
+  //read C column
+  digitalWrite(buttonA, LOW);
+  digitalWrite(buttonB, LOW);
+  digitalWrite(buttonC, HIGH);
+  delay(1);
+
+  matrix[2] = digitalRead(button1);
+  matrix[5] = digitalRead(button2);
+  matrix[8] = digitalRead(button3);
+
+  digitalWrite(buttonA, LOW);
+  digitalWrite(buttonB, LOW);
+  digitalWrite(buttonC, LOW);
+
+  return matrix;
+}
+ 
 void animateCross(int speed) {
   updateMatrix(1, 0, 0, 0, 1, 1);
   delay(speed);
@@ -90,10 +128,8 @@ void animateDiamond(int speed) {
 
 
 void loop() {
-
-  int i = analogRead(potent);
-
-  animateCross(i);
-  animateDiamond(i);
+  
+  //animateCross(i);
+  //animateDiamond(i);
 
 }
