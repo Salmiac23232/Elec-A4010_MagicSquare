@@ -42,7 +42,7 @@ void setup() {
 }
 
 // writes value on selected pin and opposite on others. if select is ALL set all to value
-void digitialTripleWrite(int pin1, int pin2, int pin3, int select, int value){
+void digitalTripleWrite(int pin1, int pin2, int pin3, int select, int value){
       digitalWrite(pin1, (select == 1 || select == ALL) ? value : ~value);
       digitalWrite(pin2, (select == 2 || select == ALL) ? value : ~value);
       digitalWrite(pin3, (select == 3 || select == ALL) ? value : ~value);
@@ -50,7 +50,7 @@ void digitialTripleWrite(int pin1, int pin2, int pin3, int select, int value){
 
 //Turns 1 led on on spesified coordinates, 0 = entire line off, ALL = entire line on
 void updateMatrix(int column, int row) {
-  digitialTripleWrite(ledin1, ledin1, ledin3, column, HIGH);
+  digitalTripleWrite(ledin1, ledin1, ledin3, column, HIGH);
   digitalTripleWrite(ledout1, ledout2, ledout3, row, LOW);
   delay(1);
 }
