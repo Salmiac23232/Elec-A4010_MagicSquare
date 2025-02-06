@@ -7,6 +7,8 @@ const int ledout1 = 8;
 const int ledout2 = 9;
 const int ledout3 = 10;
 
+const int color = 0;
+
 //buttons
 const int buttonA = 5;
 const int buttonB = 6;
@@ -20,10 +22,10 @@ const int button3 = 13;
 
 const int potent = A0;
 
-// Arrays
-int matrix[9] = {0,0,0, 
-                 0,0,0, 
-                 0,0,0};
+// Matricies
+int leds[9] = {0};
+int inputs[9] = {0};
+int prev_inputs[9] = {0};
 
 void setup() {
   Serial.begin(9600);
@@ -61,6 +63,7 @@ void updateMatrix(int column, int row) {
 
 //Takes Matrix as input and displays it on the leds using updateMatrix
 int displayMatrix(int matrix[9]){
+  updateMatrix(0,0);
   // lookup table for coordinates
   int lookup[18] = {1,1, 2,1, 3,1, 
                     1,2, 2,2, 3,2,
@@ -69,58 +72,62 @@ int displayMatrix(int matrix[9]){
   for (int i = 0; i < 9; i++){
     if (matrix[i]){
       updateMatrix(lookup[2*i], lookup[2*i+1]);
-      delay(100);
+      delay(1);
+      updateMatrix(0,0);
     }
-  }
-
+    else {
+      delay(1);
+    }
+  } 
+ 
 }
 
 // selects a column from button matrix and powers it
 void selectButtons(int column){
   digitalTripleWrite(buttonA, buttonB, buttonC, column, HIGH);
-  delay(1);
 }
 
 // Read buttons column at a time and returns an array of the input in the following format:
 int readButtons(){
   for (int i = 0; i < 9; i++){
-    matrix[i] = 0;
+    inputs[i] = 0;
   }
 
   //read A column
   selectButtons(1);
   //get values on column A
-  matrix[0] = digitalRead(button1);
-  matrix[3] = digitalRead(button2);
-  matrix[6] = digitalRead(button3);
+  inputs[0] = digitalRead(button1);
+  inputs[3] = digitalRead(button2);
+  inputs[6] = digitalRead(button3);
 
   //read B column
   selectButtons(2);
   //get values on column B
-  matrix[1] = digitalRead(button1);
-  matrix[4] = digitalRead(button2);
-  matrix[7] = digitalRead(button3);
+  inputs[1] = digitalRead(button1);
+  inputs[4] = digitalRead(button2);
+  inputs[7] = digitalRead(button3);
 
   //read C column
   selectButtons(3);
   //get values on column C
-  matrix[2] = digitalRead(button1);
-  matrix[5] = digitalRead(button2);
-  matrix[8] = digitalRead(button3);
+  inputs[2] = digitalRead(button1);
+  inputs[5] = digitalRead(button2);
+  inputs[8] = digitalRead(button3);
 
   //Turn off
   selectButtons(0);
+  return inputs;
+}
 
-  /*for (int i=0; i<9; i++){
-    Serial.print(matrix[i]);
-    if(i == 2 || i == 5 || i == 8 ){
-      Serial.print("\n");
+//Toggles the leds matrix by comparing the previous inputs to the button being pressed.
+int toggleButtons(){
+  for (int i = 0; i<9; i++){
+    if (inputs[i] > prev_inputs[i]){
+      leds[i] = !leds[i];
     }
+    prev_inputs[i] = inputs[i];
   }
-
-  Serial.print("\n");
-  delay(1);*/
-  return matrix;
+  
 }
 
 // animates a cross using updateMatrix()
@@ -151,10 +158,11 @@ void animateDiamond(int speed) {
 
 
 void loop() {
+  readButtons();
+  toggleButtons();
+  displayMatrix(leds);
 
-  displayMatrix(readButtons());
-
-  //animateCross(1000);
+  //animateCross(1);
   //animateDiamond(1000);
 
 }
