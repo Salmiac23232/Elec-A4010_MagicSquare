@@ -1,4 +1,9 @@
+#include <FastLED_NeoPixel.h> 
 #define ALL 4
+#define DATA_PIN 0
+#define NUM_LEDS 9
+#define BRIGHTNESS 255
+
 const int ledin1 = 2;
 const int ledin2 = 3;
 const int ledin3 = 4;
@@ -6,8 +11,6 @@ const int ledin3 = 4;
 const int ledout1 = 8;
 const int ledout2 = 9;
 const int ledout3 = 10;
-
-const int color = 0;
 
 //buttons
 const int buttonA = 5;
@@ -22,13 +25,18 @@ const int button3 = 13;
 
 const int potent = A0;
 
+
 // Matricies
 int leds[9] = {0};
 int inputs[9] = {0};
 int prev_inputs[9] = {0};
 
+
+FastLED_NeoPixel<NUM_LEDS, DATA_PIN, NEO_GRB> strip;  
 void setup() {
-  Serial.begin(9600);
+	strip.begin();  // initialize strip (required!)
+	strip.setBrightness(BRIGHTNESS);
+
   //Led config
   pinMode(ledin1, OUTPUT);
   pinMode(ledin2, OUTPUT);
@@ -72,11 +80,11 @@ int displayMatrix(int matrix[9]){
   for (int i = 0; i < 9; i++){
     if (matrix[i]){
       updateMatrix(lookup[2*i], lookup[2*i+1]);
-      delay(1);
+      delay(100);
       updateMatrix(0,0);
     }
     else {
-      delay(1);
+      delay(100);
     }
   } 
  
@@ -157,12 +165,33 @@ void animateDiamond(int speed) {
 }
 
 
+
+
 void loop() {
-  readButtons();
-  toggleButtons();
-  displayMatrix(leds);
+
+  updateMatrix(ALL,ALL);
+
+  colorWipe(strip.Color(255, 0, 0), 10);  // Green
+  colorWipe(strip.Color(255, 255, 0), 10);  //Yellow
+  colorWipe(strip.Color(0, 255, 0), 10);  // Red
+  colorWipe(strip.Color(0, 255, 255), 10);  // Purple
+  colorWipe(strip.Color(0, 0, 255), 10);  // Blue
+  colorWipe(strip.Color(255, 0, 255), 10);  // Cyan
+
+
+  //readButtons();
+  //toggleButtons();
+  //displayMatrix(leds);
 
   //animateCross(1);
   //animateDiamond(1000);
 
+}
+
+void colorWipe(uint32_t color, unsigned long wait) {
+	for (unsigned int i = 0; i < strip.numPixels(); i++) {
+		strip.setPixelColor(i, color);
+		strip.show();
+		delay(wait);
+	}
 }
