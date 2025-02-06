@@ -20,6 +20,11 @@ const int button3 = 13;
 
 const int potent = A0;
 
+// Arrays
+int matrix[9] = {0,0,0, 
+                 0,0,0, 
+                 0,0,0};
+
 void setup() {
   Serial.begin(9600);
   //Led config
@@ -43,28 +48,28 @@ void setup() {
 
 // writes value on selected pin and opposite on others. if select is ALL set all to value
 void digitalTripleWrite(int pin1, int pin2, int pin3, int select, int value){
-      digitalWrite(pin1, (select == 1 || select == ALL) ? value : ~value);
-      digitalWrite(pin2, (select == 2 || select == ALL) ? value : ~value);
-      digitalWrite(pin3, (select == 3 || select == ALL) ? value : ~value);
+      digitalWrite(pin1, ((select == 1 || select == ALL) ? value : !value));
+      digitalWrite(pin2, ((select == 2 || select == ALL) ? value : !value));
+      digitalWrite(pin3, ((select == 3 || select == ALL) ? value : !value));
 }
 
 //Turns 1 led on on spesified coordinates, 0 = entire line off, ALL = entire line on
 void updateMatrix(int column, int row) {
-  digitalTripleWrite(ledin1, ledin1, ledin3, column, HIGH);
+  digitalTripleWrite(ledin1, ledin2, ledin3, column, HIGH);
   digitalTripleWrite(ledout1, ledout2, ledout3, row, LOW);
-  delay(1);
 }
 
 //Takes Matrix as input and displays it on the leds using updateMatrix
 int displayMatrix(int matrix[9]){
   // lookup table for coordinates
-  int lookup[18] = {1,1 2,1 3,1, 
-                    1,2 2,2 3,2,
-                    1,3 2,3 3,3}
+  int lookup[18] = {1,1, 2,1, 3,1, 
+                    1,2, 2,2, 3,2,
+                    1,3, 2,3, 3,3};
   
-  for (int i; i > 9; i++){
+  for (int i = 0; i < 9; i++){
     if (matrix[i]){
-      updateMatrix(lookup[i], lookup[i+1]);
+      updateMatrix(lookup[2*i], lookup[2*i+1]);
+      delay(100);
     }
   }
 
@@ -78,9 +83,9 @@ void selectButtons(int column){
 
 // Read buttons column at a time and returns an array of the input in the following format:
 int readButtons(){
-  int matrix[9] = {0,0,0, 
-                   0,0,0, 
-                   0,0,0};
+  for (int i = 0; i < 9; i++){
+    matrix[i] = 0;
+  }
 
   //read A column
   selectButtons(1);
@@ -106,30 +111,50 @@ int readButtons(){
   //Turn off
   selectButtons(0);
 
+  /*for (int i=0; i<9; i++){
+    Serial.print(matrix[i]);
+    if(i == 2 || i == 5 || i == 8 ){
+      Serial.print("\n");
+    }
+  }
+
+  Serial.print("\n");
+  delay(1);*/
   return matrix;
 }
 
 // animates a cross using updateMatrix()
 void animateCross(int speed) {
   updateMatrix(1,1); 
-  updateMatrix(2,2); 
-  updateMatrix(3,3); 
-  updateMatrix(3,1); 
-  updateMatrix(1,3); 
+  delay(speed);
+  updateMatrix(2,2);
+  delay(speed); 
+  updateMatrix(3,3);
+  delay(speed); 
+  updateMatrix(3,1);
+  delay(speed); 
+  updateMatrix(1,3);
+  delay(speed); 
 }
 
 // animates a diamond using updateMatrix()
 void animateDiamond(int speed) {
   updateMatrix(2,1);
+  delay(speed);
   updateMatrix(3,2);
+  delay(speed);
   updateMatrix(2,3);
+  delay(speed);
   updateMatrix(1,2);
+  delay(speed);
 }
 
 
 void loop() {
-  
-  //animateCross(i);
-  //animateDiamond(i);
+
+  displayMatrix(readButtons());
+
+  //animateCross(1000);
+  //animateDiamond(1000);
 
 }
