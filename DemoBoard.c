@@ -1,8 +1,8 @@
 #include <FastLED_NeoPixel.h> 
 #define ALL 4
-#define DATA_PIN 0
+#define DATA_PIN 2
 #define NUM_LEDS 9
-#define BRIGHTNESS 255
+#define BRIGHTNESS 50
 
 const int ledin1 = 2;
 const int ledin2 = 3;
@@ -21,19 +21,20 @@ const int button1 = 11;
 const int button2 = 12;
 const int button3 = 13;
 
-// potentiometer
-
-const int potent = A0;
-
 
 // Matricies
-int leds[9] = {0};
+uint32_t colors[9] = {0}; // This is the color matrix that the displayMatrix uses. 
 int inputs[9] = {0};
 int prev_inputs[9] = {0};
 
-
+// Fast Led Setup and Colors
 FastLED_NeoPixel<NUM_LEDS, DATA_PIN, NEO_GRB> strip;  
+
+int turn = 1;
+
+
 void setup() {
+  Serial.begin(9600);
 	strip.begin();  // initialize strip (required!)
 	strip.setBrightness(BRIGHTNESS);
 
@@ -63,31 +64,13 @@ void digitalTripleWrite(int pin1, int pin2, int pin3, int select, int value){
       digitalWrite(pin3, ((select == 3 || select == ALL) ? value : !value));
 }
 
-//Turns 1 led on on spesified coordinates, 0 = entire line off, ALL = entire line on
-void updateMatrix(int column, int row) {
-  digitalTripleWrite(ledin1, ledin2, ledin3, column, HIGH);
-  digitalTripleWrite(ledout1, ledout2, ledout3, row, LOW);
-}
-
-//Takes Matrix as input and displays it on the leds using updateMatrix
-int displayMatrix(int matrix[9]){
-  updateMatrix(0,0);
-  // lookup table for coordinates
-  int lookup[18] = {1,1, 2,1, 3,1, 
-                    1,2, 2,2, 3,2,
-                    1,3, 2,3, 3,3};
+//Takes Leds as input and displays it on the leds using updateMatrix
+int displayMatrix(uint32_t color[9]){
   
   for (int i = 0; i < 9; i++){
-    if (matrix[i]){
-      updateMatrix(lookup[2*i], lookup[2*i+1]);
-      delay(100);
-      updateMatrix(0,0);
-    }
-    else {
-      delay(100);
-    }
+    strip.setPixelColor(i, color[i]);
   } 
- 
+ 	strip.show();
 }
 
 // selects a column from button matrix and powers it
@@ -127,66 +110,31 @@ int readButtons(){
   return inputs;
 }
 
-//Toggles the leds matrix by comparing the previous inputs to the button being pressed.
-int toggleButtons(){
+//Toggles to a given color the leds matrix by comparing the previous inputs to the button being pressed.
+// returns how many times a change has happened. 
+int toggleButtons(uint32_t color){
+  int changes = 0;
   for (int i = 0; i<9; i++){
     if (inputs[i] > prev_inputs[i]){
-      leds[i] = !leds[i];
+      colors[i] = (!colors[i]*color); // Toggle value
+      changes++; // count as 1 change made
     }
     prev_inputs[i] = inputs[i];
   }
+  return changes;
+}
   
-}
-
-// animates a cross using updateMatrix()
-void animateCross(int speed) {
-  updateMatrix(1,1); 
-  delay(speed);
-  updateMatrix(2,2);
-  delay(speed); 
-  updateMatrix(3,3);
-  delay(speed); 
-  updateMatrix(3,1);
-  delay(speed); 
-  updateMatrix(1,3);
-  delay(speed); 
-}
-
-// animates a diamond using updateMatrix()
-void animateDiamond(int speed) {
-  updateMatrix(2,1);
-  delay(speed);
-  updateMatrix(3,2);
-  delay(speed);
-  updateMatrix(2,3);
-  delay(speed);
-  updateMatrix(1,2);
-  delay(speed);
-}
-
-
 
 
 void loop() {
-
-  updateMatrix(ALL,ALL);
-
-  colorWipe(strip.Color(255, 0, 0), 10);  // Green
-  colorWipe(strip.Color(255, 255, 0), 10);  //Yellow
-  colorWipe(strip.Color(0, 255, 0), 10);  // Red
-  colorWipe(strip.Color(0, 255, 255), 10);  // Purple
-  colorWipe(strip.Color(0, 0, 255), 10);  // Blue
-  colorWipe(strip.Color(255, 0, 255), 10);  // Cyan
-
-
-  //readButtons();
-  //toggleButtons();
-  //displayMatrix(leds);
-
-  //animateCross(1);
-  //animateDiamond(1000);
+  
+  readButtons();
+  toggleButtons(strip.Color(0, 255, 0));  
+  displayMatrix(colors);
 
 }
+
+
 
 void colorWipe(uint32_t color, unsigned long wait) {
 	for (unsigned int i = 0; i < strip.numPixels(); i++) {
