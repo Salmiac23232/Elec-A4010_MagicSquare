@@ -1,3 +1,4 @@
+#include <LiquidCrystal_I2C.h>
 #include <FastLED_NeoPixel.h> 
 #define ALL 4
 #define DATA_PIN 2
@@ -21,19 +22,46 @@ const int button1 = 11;
 const int button2 = 12;
 const int button3 = 13;
 
+//Speaker 
+const int speaker = 3; 
+
+//LCD
+LiquidCrystal_I2C lcd(0x27,20,4); 
+
 
 // Matricies
 uint32_t colors[9] = {0}; // This is the color matrix that the displayMatrix uses. 
-int inputs[9] = {0};
+int inputs[9] = {0}; 
 int prev_inputs[9] = {0};
 
 // Fast Led Setup and Colors
 FastLED_NeoPixel<NUM_LEDS, DATA_PIN, NEO_GRB> strip;  
 
-int turn = 1;
 
 
 void setup() {
+  lcd.init();
+  lcd.clear();
+  // Print a message to the LCD.
+  lcd.backlight();
+  lcd.setCursor(0,0);
+  lcd.print("Hello, world!");
+  lcd.setCursor(0,1);
+  lcd.print("Testing testing!");
+  lcd.setCursor(0,2);
+  lcd.print("this one!");
+  lcd.setCursor(0,3);
+  lcd.print("that one!");
+  
+  tone(speaker, 262, 500); //C
+  delay(500);
+  tone(speaker, 330, 500); //E
+  delay(500);
+  tone(speaker, 392, 500); //G
+  delay(500);
+
+
+
   Serial.begin(9600);
 	strip.begin();  // initialize strip (required!)
 	strip.setBrightness(BRIGHTNESS);
@@ -127,7 +155,8 @@ int toggleButtons(uint32_t color){
 
 
 void loop() {
-  
+
+
   readButtons();
   toggleButtons(strip.Color(0, 255, 0));  
   displayMatrix(colors);
