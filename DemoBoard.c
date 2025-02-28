@@ -289,3 +289,4 @@ void colorWipe(uint32_t color, unsigned long wait) {
     delay(wait);
   }
 }
+
