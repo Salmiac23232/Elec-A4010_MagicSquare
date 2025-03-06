@@ -231,6 +231,20 @@ void selectMenu(int array[9]) {
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void loop() {
 
   // After Boot Up, Select Game
@@ -270,6 +284,75 @@ void loop() {
     case 3:
     //Enter Game Logic Here
 
+
+    // todo esta primera parte debe ir fuera del vodiog de switch and break 
+    int valiaika = 1000; 
+    int increase = 200;
+    int correct_color = 0;
+    int round = 0;
+
+
+    void pattern(){
+
+      uint32_t colors8 = strip.Color (255,0,0);//red
+      uint32_t correct = strip.Color (0,255,0);//green
+
+      
+      for (int i = 0; i < NUM_LEDS; i++) {
+        strip.setPixelColor(i, 0);  // turn off leds
+      }
+      
+      
+      for (int i = 0; i < NUM_LEDS; i++) {
+        strip.setPixelColor(i, colors8); //it goes through each led and assigns color red
+      }
+      correct = random(0, NUM_LEDS);  // select random led to turn green
+      
+      strip.setPixelColor(correct, colors8);
+      // here we select the correct led back to red 
+      strip.show();
+    }
+
+    
+    void loop (){
+      // new round and pattern
+      round++;
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print("Round: ");
+      lcd.print(round);
+
+      pattern();  // shows pattern
+      
+      bool botonPresionado = false;
+      while (!botonPresionado) {
+        readButtons(); //function that assigns the values to the buttons 
+      
+        for (int i = 0; i < 9; i++) {
+          if (inputs[i] == LOW) {  
+            if (i == correct) {
+              tone(speaker, 523, 500);  // correct sound (C)
+              botonPresionado = true;  // next round
+              delay(500);  
+            } else {
+              tone(speaker,440, 500);  // incorrect sound  (A)
+              lcd.clear();
+              lcd.setCursor(0, 0);
+              lcd.print("¡Game Over!");
+              delay(1000);
+              inMenu = 1;  // volver al menú principal
+              return;
+            }
+          }
+        }
+      }
+
+      valiaika = max(increase, valiaika - increase); // aca hacemos que la velocidad maxima sea 200
+      // asi el juego no se vuelve imposible 
+      delay(valiaika);  
+      break;
+    }
+
     //Demo Code, Can remove.
     colorWipe(strip.Color(255, 0, 0), 20);
     colorWipe(strip.Color(255, 255, 0), 20);
@@ -277,9 +360,9 @@ void loop() {
     colorWipe(strip.Color(0, 255, 255), 20);
     colorWipe(strip.Color(255, 255, 255), 20);
     break;
+  
+
   }
-
-
 }
 
 void colorWipe(uint32_t color, unsigned long wait) {
