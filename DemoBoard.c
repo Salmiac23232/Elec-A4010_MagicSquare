@@ -1,5 +1,6 @@
 #include <LiquidCrystal_I2C.h>
 #include <FastLED_NeoPixel.h>
+#include <pitches.h>
 #define ALL 4
 #define DATA_PIN 2
 #define NUM_LEDS 9
@@ -16,6 +17,45 @@ const int button3 = 13;
 
 //Speaker
 const int speaker = 3;
+
+//Songs
+
+struct song{
+  int* chart;
+  int* melody;
+  int* noteDurations;
+  int size;
+};
+// Level 1
+
+int chart[] = {
+  1, 3, 3, 7, 1, 0, 4, 2
+};
+
+int melody[] = {
+  NOTE_C4, NOTE_G3, NOTE_G3, NOTE_A3, NOTE_G3, 0, NOTE_B3, NOTE_C4
+};
+
+int noteDurations[] = {
+  4, 8, 8, 4, 4, 4, 4, 4
+};
+
+struct song tutorial = {chart, melody, noteDurations, 8};
+
+// Level 2
+int chart2[] = {
+  1,1,2,3,3,2,1,1,2,3,2,1,2,3,3,1,2,3,3
+};
+
+int melody2[] = {
+  NOTE_E4, NOTE_B3, NOTE_C4, NOTE_D4, NOTE_C4, NOTE_B3, NOTE_A3, NOTE_A3, NOTE_C4, NOTE_E4, NOTE_D4, NOTE_C4, NOTE_B3, NOTE_C4, NOTE_D4, NOTE_E4, NOTE_C4, NOTE_A3, NOTE_A3
+};
+
+int noteDurations2[] = {
+  4,8,8,4,8,8,4,8,8,4,8,8,6,16,4,4,4,4,4
+};
+
+struct song tetris = {chart2, melody2, noteDurations2, 19};
 
 //LCD
 LiquidCrystal_I2C lcd(0x27, 20, 4);
@@ -148,6 +188,27 @@ int toggleArray(uint32_t array[9], uint32_t value) {
   return changes;
 }
 
+//Gets one input form buttons
+void singleInput(int array[9]) {
+  int set = 0;
+  for (int i = 0; i < 9; i++) {
+    if (inputs[i] > prev_inputs[i]) {
+      // if there is a button push, initialize array to zero
+      for (int j = 0; j < 9; j++) {
+        array[j] = 0;
+      }
+
+      // add 1 if a set hasnt been done to others yet
+      if (set == 0) {
+        array[i]++;
+        set = 1;
+      }
+    }
+
+    prev_inputs[i] = inputs[i];
+  }
+}
+
 // Updates the input array to select one of the buttons
 void selectMenu(int array[9]) {
   int set = 0;
@@ -185,37 +246,37 @@ void selectMenu(int array[9]) {
         switch (i) {
           case 0:
             lcd.setCursor(3, 2);
-            lcd.print("Tic Tac Toe       "); 
+            lcd.print("Tic Tac Toe       ");
             Game = 1;
             break;
           case 1:
-          lcd.setCursor(3, 2);
-            lcd.print("Rythm Game       "); 
+            lcd.setCursor(3, 2);
+            lcd.print("Rythm Game       ");
             Game = 2;
             break;
           case 2:
-          lcd.setCursor(3, 2);
-            lcd.print("Simon Says      "); 
+            lcd.setCursor(3, 2);
+            lcd.print("Simon Says      ");
             Game = 3;
             break;
           case 3:
-          lcd.setCursor(3, 2);
-            lcd.print("Settings      "); 
+            lcd.setCursor(3, 2);
+            lcd.print("Settings      ");
             break;
           case 4:
-          lcd.setCursor(3, 2);
-            lcd.print("Credits    "); 
+            lcd.setCursor(3, 2);
+            lcd.print("Credits    ");
             break;
           default:
-                    lcd.setCursor(3, 2);
-            lcd.print("Coming Soon...    "); 
-          break;
+            lcd.setCursor(3, 2);
+            lcd.print("Coming Soon...    ");
+            break;
         }
         break;
       case 2:
         array[i] = 1;
         lcd.setCursor(3, 1);
-        lcd.print("             "); 
+        lcd.print("             ");
         strip.setPixelColor(i, strip.Color(255, 255, 255));
         strip.show();
         delay(250);
@@ -231,6 +292,72 @@ void selectMenu(int array[9]) {
 }
 
 
+// Show the incoming Note in yellow
+void telegraphNote(int placement) {
+
+  if (placement) {
+    uint32_t matrix[9] = { 0 };
+    matrix[placement - 1] = strip.Color(255, 255, 0);  // Yellow
+    displayMatrix(matrix);
+  } else {
+    uint32_t clear[9] = { 0 };
+    displayMatrix(clear);
+  }
+}
+
+// Listens for input for given button for a duration in milliseconds, Returns one if captured input, return 0 if no input
+int listenForInput(int button, int duration) {
+  unsigned long start = millis();
+
+  while ((millis() - start) < duration) {
+
+    int rythmInputs[9] = { 0 };
+    readButtons();
+    singleInput(rythmInputs);
+
+    //Check inputs
+    for (int i = 0; i < 9; i++){
+      if (rythmInputs[i]){
+        if (i == (button-1)){
+          return 1;
+        }
+        return 0;
+      }
+    }
+  }
+  return 0;
+}
+
+void playSong(struct song* level){
+        int points = 0;
+        for (int thisNote = 0; thisNote < level->size; thisNote++) {
+        int noteDuration = 5000 / level->noteDurations[thisNote];
+        int pauseBetweenNotes = noteDuration * 1.30;
+        uint32_t clear[9] = { 0 };
+
+        telegraphNote(level->chart[thisNote]);
+        int correct = listenForInput(level->chart[thisNote], pauseBetweenNotes / 2);
+
+        uint32_t matrix[9] = { 0 };
+
+        if (correct) {
+          matrix[level->chart[thisNote] - 1] = strip.Color(255, 0, 0);  // Green
+          displayMatrix(matrix);
+          tone(speaker, level->melody[thisNote], noteDuration);
+          points++;
+          lcd.setCursor(7, 2);
+          lcd.print(points);
+        } else {
+          matrix[level->chart[thisNote] - 1] = strip.Color(0, 255, 0);  // Red
+          displayMatrix(matrix);
+          tone(speaker, 62, noteDuration);
+        }
+        delay(pauseBetweenNotes / 2);
+        noTone(speaker);
+      }
+}
+
+
 void loop() {
 
   // After Boot Up, Select Game
@@ -240,46 +367,70 @@ void loop() {
     return;
   }
 
-  // What game to play 
-  switch (Game){
+  // What game to play
+  switch (Game) {
 
     //No game, return to menu
     case 0:
       inMenu = 1;
-    break;
+      break;
 
     // Tic tac toe
-    case 1: 
-    // Enter Game Logic Here
+    case 1:
+      // Enter Game Logic Here
 
-    // Demo Code Can Remove.
+      // Demo Code Can Remove.
       readButtons();
       toggleArray(colors, strip.Color(0, 0, 255));
       displayMatrix(colors);
-    break;
+      break;
 
     // Rythm Game
-    case 2: 
-    // Enter Game Logic Here
+    case 2:
+      // Enter Game Logic Here
       readButtons();
       toggleArray(colors, strip.Color(255, 255, 0));
       displayMatrix(colors);
-    break;
+
+      lcd.clear();
+      lcd.setCursor(3, 1);
+      lcd.print("Tutorial");
+      lcd.setCursor(0, 2);
+      lcd.print("Score: ");
+      playSong(&tutorial);
+      lcd.setCursor(3, 1);
+      lcd.clear();
+      lcd.print("Next up Tetris");
+
+      delay(4000);
+      lcd.clear();
+      lcd.setCursor(3, 1);
+      lcd.print("Start!");
+      delay(1000);
+      lcd.clear();
+      lcd.setCursor(3, 1);
+      lcd.print("Tetris");
+      lcd.setCursor(0, 2);
+      lcd.print("Score: ");
+      playSong(&tetris);
+
+      delay(5000);
+      lcd.clear();
+      inMenu = 1;
+      break;
 
     //Simon says
     case 3:
-    //Enter Game Logic Here
+      //Enter Game Logic Here
 
-    //Demo Code, Can remove.
-    colorWipe(strip.Color(255, 0, 0), 20);
-    colorWipe(strip.Color(255, 255, 0), 20);
-    colorWipe(strip.Color(0, 255, 0), 20);
-    colorWipe(strip.Color(0, 255, 255), 20);
-    colorWipe(strip.Color(255, 255, 255), 20);
-    break;
+      //Demo Code, Can remove.
+      colorWipe(strip.Color(255, 0, 0), 20);
+      colorWipe(strip.Color(255, 255, 0), 20);
+      colorWipe(strip.Color(0, 255, 0), 20);
+      colorWipe(strip.Color(0, 255, 255), 20);
+      colorWipe(strip.Color(255, 255, 255), 20);
+      break;
   }
-
-
 }
 
 void colorWipe(uint32_t color, unsigned long wait) {
