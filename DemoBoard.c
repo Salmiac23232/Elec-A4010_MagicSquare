@@ -324,15 +324,15 @@ void loop() {
 
       pattern();  // shows pattern
       
-      bool botonPresionado = false;
-      while (!botonPresionado) {
+      bool botonpresionado = false;
+      while (!botonpresionado) {
         readButtons(); //function that assigns the values to the buttons 
       
         for (int i = 0; i < 9; i++) {
           if (inputs[i] == LOW) {  
             if (i == correct) {
               tone(speaker, 523, 500);  // correct sound (C)
-              botonPresionado = true;  // next round
+              botonpresionado = true;  // next round
               delay(500);  
             } else {
               tone(speaker,440, 500);  // incorrect sound  (A)
@@ -340,15 +340,15 @@ void loop() {
               lcd.setCursor(0, 0);
               lcd.print("¡Game Over!");
               delay(1000);
-              inMenu = 1;  // volver al menú principal
+              inMenu = 1;  //go back to menu
               return;
             }
           }
         }
       }
 
-      valiaika = max(increase, valiaika - increase); // aca hacemos que la velocidad maxima sea 200
-      // asi el juego no se vuelve imposible 
+      valiaika = max(increase, valiaika - increase); // maximum speed will be 200
+      // this way the game does not become impossible 
       delay(valiaika);  
       break;
     }
