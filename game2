@@ -1,0 +1,95 @@
+ 
+    int round = 0;
+    int correct_color = 0;
+    int points_player1 = 0;
+    int points_player2 = 0;
+
+
+    void pattern(){
+
+      uint32_t colors8 = strip.Color (255,0,0);//red
+      uint32_t player1 = strip.Color (0,255,0);//green
+      unit32_t player2 = strip.Color (0,0,255);//blue
+
+      
+      for (int i = 0; i < NUM_LEDS; i++) {
+        strip.setPixelColor(i, 0);  // turn off leds
+      }
+      
+      
+      for (int i = 0; i < NUM_LEDS; i++) {
+        strip.setPixelColor(i, colors8); //it goes through each led and assigns color red
+
+      }
+      player1 = random(0, NUM_LEDS);  // select random led to turn green
+      player2 = random(0, NUM_LEDS); // select random led to turn blue 
+
+      while (player1 == player2){
+        player2 = random (0, NUM_LEDS);// avoids getting the same color in one led 
+      }
+      
+      strip.setPixelColor(player1, colors8);
+      // here we select the player1 led back to red 
+      strip.setPixelColor(player2, colors8);
+      //select the player2 back to red
+      strip.show();
+    }
+
+    
+    void loop (){
+      
+
+      //points_player1++;
+      //points_player2++;
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print("Player 1: ");
+      lcd.print(points_player1);
+      lcd.setCursor(1,0);
+      lcd.print("Player 2:");
+      lcd.print(point_player2);
+
+
+      pattern();  // shows pattern
+      
+      while (round < 12) { 
+        bool botonpresionado = false;
+        while (!botonpresionado) {
+          readButtons(); //function that assigns the values to the buttons 
+
+          for (int i = 0; i < 9; i++) {
+            if (inputs[i] == LOW) {  
+              if (i == player1) {
+                tone(speaker, 523, 500);  // player1 sound (C)
+                botonpresionado = true;  // next round
+                points_player1++;
+                delay(500);  
+                break;
+              if (i == player2){
+                tone(speaker,440, 500);  // player2 sound  (A)
+                botonpresionado = true; //next round 
+                points_player2++;
+                delay(500);
+                break;
+              }
+            }
+          }
+        }
+        round++;
+      }
+      if points_player1 > points_player2{
+        lcd.clear();
+        lcd.setCursor(1,0);
+        lcd.print("Player 1 Wins!")
+        delay(3000);
+      }
+      else {
+        lcd.clear();
+        lcd.setCursor(1,0);
+        lcd.print("Player 2 Wins!")
+        delay(3000);
+      }
+      inMenu = 1;  //go back to menu
+      return;
+  }
+}
