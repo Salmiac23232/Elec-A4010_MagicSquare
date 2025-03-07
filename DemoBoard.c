@@ -4,7 +4,7 @@
 #define ALL 4
 #define DATA_PIN 2
 #define NUM_LEDS 9
-#define BRIGHTNESS 100
+#define BRIGHTNESS 200
 
 //buttons
 const int buttonA = 8;
@@ -33,7 +33,7 @@ int chart[] = {
 };
 
 int melody[] = {
-  NOTE_C4, NOTE_G3, NOTE_G3, NOTE_A3, NOTE_G3, 0, NOTE_B3, NOTE_C4
+  C4, G3, G3, A3, G3, 0, B3, C4
 };
 
 int noteDurations[] = {
@@ -44,18 +44,22 @@ struct song tutorial = {chart, melody, noteDurations, 8};
 
 // Level 2
 int chart2[] = {
-  1,1,2,3,3,2,1,1,2,3,2,1,2,3,3,1,2,3,3
+  /*1,1,2,3,3,2,1,1,2,3,2,1,2,3,3,1,2,3,3,
+  1,1,2,3,3,2,1,1,2,3,2,1,2,3,3,1,2,3*/
+  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 };
 
 int melody2[] = {
-  NOTE_E4, NOTE_B3, NOTE_C4, NOTE_D4, NOTE_C4, NOTE_B3, NOTE_A3, NOTE_A3, NOTE_C4, NOTE_E4, NOTE_D4, NOTE_C4, NOTE_B3, NOTE_C4, NOTE_D4, NOTE_E4, NOTE_C4, NOTE_A3, NOTE_A3
+  E4, B3, C4, D4, C4, B3, A3, A3, C4, E4, D4, C4, B3, C4, D4, E4, C4, A3, A3, 
+  D4, F4, A4, G4, F4, E4, C4, E4, D4, C4, B3, B3, C4, D4, E4, C4, A3, A3, 
 };
 
 int noteDurations2[] = {
-  4,8,8,4,8,8,4,8,8,4,8,8,6,16,4,4,4,4,4
+  4,8,8,4,8,8,4,8,8,4,8,8,6,16,4,4,4,4,2,
+  4,8,8,4,8,8,4,8,8,4,8,8,4,8,8,4,4,4,2
 };
 
-struct song tetris = {chart2, melody2, noteDurations2, 19};
+struct song tetris = {chart2, melody2, noteDurations2, 19+18};
 
 //LCD
 LiquidCrystal_I2C lcd(0x27, 20, 4);
