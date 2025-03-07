@@ -1,0 +1,63 @@
+int valiaika = 1000; 
+    int increase = 200;
+    int correct_color = 0;
+    int round = 0;
+
+
+    void pattern(){
+
+      uint32_t colors8 = strip.Color (255,0,0);//red
+      uint32_t correct = strip.Color (0,255,0);//green
+
+      
+      for (int i = 0; i < NUM_LEDS; i++) {
+        strip.setPixelColor(i, 0);  // turn off leds
+      }
+      
+      
+      for (int i = 0; i < NUM_LEDS; i++) {
+        strip.setPixelColor(i, colors8); //it goes through each led and assigns color red
+      }
+      correct = random(0, NUM_LEDS);  // select random led to turn green
+      
+      strip.setPixelColor(correct, colors8);
+      // here we select the correct led back to red 
+      strip.show();
+    }
+   void loop (){
+        // new round and pattern
+        round++;
+        lcd.clear();
+        lcd.setCursor(0, 0);
+        lcd.print("Round: ");
+        lcd.print(round);
+  
+        pattern();  // shows pattern
+        
+        bool botonpresionado = false;
+        while (!botonpresionado) {
+          readButtons(); //function that assigns the values to the buttons 
+        
+          for (int i = 0; i < 9; i++) {
+            if (inputs[i] == LOW) {  
+              if (i == correct) {
+                tone(speaker, 523, 500);  // correct sound (C)
+                botonpresionado = true;  // next round
+                delay(500);  
+              } else {
+                tone(speaker,440, 500);  // incorrect sound  (A)
+                lcd.clear();
+                lcd.setCursor(0, 0);
+                lcd.print("¡Game Over!");
+                delay(1000);
+                inMenu = 1;  //go back to menu
+                return;
+              }
+            }
+          }
+        }
+       valiaika = max(increase, valiaika - increase); // maximum speed will be 200
+            // this way the game does not become impossible 
+            delay(valiaika);  
+            break;
+          }
