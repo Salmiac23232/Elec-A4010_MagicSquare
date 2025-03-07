@@ -11,8 +11,8 @@ int actions(int array[]) {
 char player(int array[]) {
   int num_x = 0, num_o = 0;
   for (int i = 0; i < 9; i++) {
-    if (array[i] == X) num_x++;
-    if (array[i] == O) num_o++;
+    if (array[i] == 1) num_x++;
+    if (array[i] == 2) num_o++;
   }
   return num_o == num_x ? 'X' : 'O';
 }
@@ -28,9 +28,9 @@ int minimax(int array[], int depth, int alpha, int beta, bool isMaximizing) {
     int maxEval = -1000;
     for (int i = 0; i < 9; i++) {
       if (!array[i]) {
-        array[i] = 1;
+        array[i] = 0;
         int eval = minimax(array, depth + 1, alpha, beta, false);
-        array[i] = EMPTY;
+        array[i] = 0;
         maxEval = max(maxEval, eval);
         alpha = max(alpha, eval);
         if (beta <= alpha) break;
@@ -43,7 +43,7 @@ int minimax(int array[], int depth, int alpha, int beta, bool isMaximizing) {
       if (!array[i]) {
         array[i] = 0;
         int eval = minimax(array, depth + 1, alpha, beta, true);
-        array[i] = EMPTY;
+        array[i] = 0;
         minEval = min(minEval, eval);
         beta = min(beta, eval);
         if (beta <= alpha) break;
@@ -76,7 +76,7 @@ int bestMove(int array[]) {
 
   for (int i = 0; i < 9; i++) {
     if (array[i] == 0) {
-      array[i] = 1;
+      array[i] = 0;
       int moveVal = minimax(array, 0, -1000, 1000, false);
       array[i] = 0;
       if (moveVal > bestVal) {
