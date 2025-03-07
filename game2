@@ -41,6 +41,7 @@
 
       //points_player1++;
       //points_player2++;
+      // capaz hay que poner los points en cero denuevo aca? 
       lcd.clear();
       lcd.setCursor(0, 0);
       lcd.print("Player 1: ");
