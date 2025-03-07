@@ -1,7 +1,7 @@
 int actions(int array[]) {
   int availableMoves = 0;
   for (int i = 0; i < 9; i++) {
-    if (array[i] == EMPTY) {
+    if (array[i] == 0) {
       availableMoves++;
     }
   }
@@ -28,7 +28,7 @@ int minimax(int array[], int depth, int alpha, int beta, bool isMaximizing) {
     int maxEval = -1000;
     for (int i = 0; i < 9; i++) {
       if (!array[i]) {
-        array[i] = X;
+        array[i] = 1;
         int eval = minimax(array, depth + 1, alpha, beta, false);
         array[i] = EMPTY;
         maxEval = max(maxEval, eval);
@@ -41,7 +41,7 @@ int minimax(int array[], int depth, int alpha, int beta, bool isMaximizing) {
     int minEval = 1000;
     for (int i = 0; i < 9; i++) {
       if (!array[i]) {
-        array[i] = O;
+        array[i] = 0;
         int eval = minimax(array, depth + 1, alpha, beta, true);
         array[i] = EMPTY;
         minEval = min(minEval, eval);
@@ -75,10 +75,10 @@ int bestMove(int array[]) {
   int move = -1;
 
   for (int i = 0; i < 9; i++) {
-    if (array[i] == EMPTY) {
-      array[i] = X;
+    if (array[i] == 0) {
+      array[i] = 1;
       int moveVal = minimax(array, 0, -1000, 1000, false);
-      array[i] = EMPTY;
+      array[i] = 0;
       if (moveVal > bestVal) {
         move = i;
         bestVal = moveVal;
