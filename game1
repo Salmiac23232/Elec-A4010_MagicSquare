@@ -1,4 +1,4 @@
-int valiaika = 1000; 
+    int valiaika = 1000; 
     int increase = 200;
     int correct_color = 0;
     int round = 0;
