@@ -1,3 +1,6 @@
+#include <stdio.h>
+#include <stdbool.h>
+
 #define X 1  // X on 1
 #define O 2  // O on 2
 #define EMPTY 0  // Tyhjä on 0
@@ -99,4 +102,59 @@ bool terminal(int array[]) {
     return (evaluate(array) != 0 || actions(array) == 0);
 }
 
+// Funktio pelilaudan tulostamiseen
+void print_board(int array[]) {
+    for (int i = 0; i < 9; i++) {
+        if (array[i] == X) {
+            printf("X");
+        } else if (array[i] == O) {
+            printf("O");
+        } else {
+            printf("_");
+        }
 
+        if ((i + 1) % 3 == 0) {
+            printf("\n");
+        } else {
+            printf("|");
+        }
+    }
+}
+
+int main() {
+    int board[9] = {EMPTY};  // Alustetaan pelilauta tyhjiksi
+    printf("Tervetuloa Tic-Tac-Toe peliin!\n");
+
+    while (!terminal(board)) {
+        print_board(board);
+        
+        // AI:n (X) siirto
+        int move = bestMove(board);
+        printf("AI (X) tekee siirron kohdassa %d\n", move);
+        board[move] = X;  // Tehdään siirto X:lle
+        
+        if (terminal(board)) break;  // Peli päättyi, jos terminaalitila on saavutettu
+        
+        // Pelaaja O:n vuoro (voit lisätä tähän käyttäjän syötteen)
+        print_board(board);
+        printf("Sinun vuorosi (O), valitse sijainti (0-8): ");
+        scanf("%d", &move);
+        if (board[move] == EMPTY) {
+            board[move] = O;  // Pelaaja O tekee siirron
+        } else {
+            printf("Virheellinen siirto, yritä uudelleen!\n");
+        }
+    }
+    
+    print_board(board);
+    int winner = evaluate(board);
+    if (winner == 1) {
+        printf("X voitti!\n");
+    } else if (winner == -1) {
+        printf("O voitti!\n");
+    } else {
+        printf("Tasapeli!\n");
+    }
+    
+    return 0;
+}

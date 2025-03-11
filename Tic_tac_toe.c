@@ -1,3 +1,6 @@
+#include <stdio.h>
+#include <stdbool.h>
+
 #define X 1  // X on 1
 #define O 2  // O on 2
 #define EMPTY 0  // Tyhjä on 0

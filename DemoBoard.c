@@ -1,6 +1,6 @@
 #include <LiquidCrystal_I2C.h>
 #include <FastLED_NeoPixel.h>
-#include <Tic_tac_toe.h>
+#include "Tic_tac_toe.c"
 #define ALL 4
 #define DATA_PIN 2
 #define NUM_LEDS 9
@@ -254,12 +254,12 @@ void loop() {
     // Enter Game Logic Here
 
     // Demo Code Can Remove.
-    readButtons();
+      readButtons();
       if (player(prev_inputs) == 'X')
       {
       lcd.setCursor(3, 2);
       lcd.print("X's turn (AI)"); 
-      int move = bestMove(board);
+      int move = bestMove(prev_inputs);
       inputs[move] = 1;
       toggleArray(colors, strip.Color(0, 255, 0));
       }
@@ -267,6 +267,10 @@ void loop() {
       {
       lcd.setCursor(3, 2);
       lcd.print("O's turn"); 
+      for (int i = 0; i < 9; i++)
+      {
+        if (inputs[i]) inputs[i] == 2;
+      }
       toggleArray(colors, strip.Color(0, 255, 0));
       }
       displayMatrix(colors);
