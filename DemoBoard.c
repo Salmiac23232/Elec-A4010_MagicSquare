@@ -1,6 +1,6 @@
 #include <LiquidCrystal_I2C.h>
 #include <FastLED_NeoPixel.h>
-#include "Tic_tac_toe.c"
+#include "Tic_Tac_Toe.c"
 #define ALL 4
 #define DATA_PIN 2
 #define NUM_LEDS 9
