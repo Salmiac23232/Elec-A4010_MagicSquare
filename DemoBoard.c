@@ -254,26 +254,40 @@ void loop() {
     // Enter Game Logic Here
 
     // Demo Code Can Remove.
-      readButtons();
-      if (player(prev_inputs) == 'X')
+      while (!terminal(prev_inputs))
       {
-      lcd.setCursor(3, 2);
-      lcd.print("X's turn (AI)"); 
-      int move = bestMove(prev_inputs);
-      inputs[move] = 1;
-      toggleArray(colors, strip.Color(0, 255, 0));
-      }
-      else (player(prev_inputs) == 'O')
-      {
-      lcd.setCursor(3, 2);
-      lcd.print("O's turn"); 
-      for (int i = 0; i < 9; i++)
-      {
-        if (inputs[i]) inputs[i] == 2;
-      }
-      toggleArray(colors, strip.Color(0, 255, 0));
+        if (player(prev_inputs) == 'X')
+        {
+        lcd.setCursor(3, 2);
+        lcd.print("X's turn (AI)"); 
+        int move = bestMove(prev_inputs);
+        inputs[move] = 1;
+        toggleArray(colors, strip.Color(0, 255, 0));
+        displayMatrix(colors);
+        }
+        else (player(prev_inputs) == 'O')
+        {
+          readButtons();
+          lcd.setCursor(3, 2);
+          lcd.print("O's turn"); 
+          for (int i = 0; i < 9; i++)
+          {
+            if (inputs[i] && !prev_inputs) inputs[i] == 2;
+            else
+              lcd.print("Invalid move");
+          }
+          toggleArray(colors, strip.Color(255, 0, 0));
+          displayMatrix(colors);
+        }
       }
       displayMatrix(colors);
+      int winner = evaluate(board);
+      if (winner == 1) 
+        lcd.print("X win");
+      else if (winner == -1) 
+        lcd.print("O win");
+      else 
+        lcd.print("Stalemate");
     break;
 
     // Rythm Game
