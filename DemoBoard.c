@@ -1,6 +1,6 @@
 #include <LiquidCrystal_I2C.h>
 #include <FastLED_NeoPixel.h>
-#include "Tic_Tac_Toe.c"
+#include "Tic_Tac_Toe.h"
 #define ALL 4
 #define DATA_PIN 2
 #define NUM_LEDS 9
@@ -265,7 +265,7 @@ void loop() {
         toggleArray(colors, strip.Color(0, 255, 0));
         displayMatrix(colors);
         }
-        else (player(prev_inputs) == 'O')
+        else 
         {
           readButtons();
           lcd.setCursor(3, 2);
@@ -281,7 +281,7 @@ void loop() {
         }
       }
       displayMatrix(colors);
-      int winner = evaluate(board);
+      int winner = evaluate(prev_inputs);
       if (winner == 1) 
         lcd.print("X win");
       else if (winner == -1) 
