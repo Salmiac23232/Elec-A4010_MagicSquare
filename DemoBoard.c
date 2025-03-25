@@ -26,6 +26,7 @@ LiquidCrystal_I2C lcd(0x27, 20, 4);
 uint32_t colors[9] = { 0 };  // This is the color matrix that the displayMatrix uses.
 int inputs[9] = { 0 };
 int prev_inputs[9] = { 0 };
+int play_board[9] = { 0 };
 
 // Fast Led Setup and Colors
 FastLED_NeoPixel<NUM_LEDS, DATA_PIN, NEO_GRB> strip;
@@ -45,6 +46,7 @@ void setup() {
 
   lcd.init();
   lcd.clear();
+  lcd.begin(20, 4);
   // Print a message to the LCD.
   lcd.backlight();
   lcd.setCursor(3, 1);
@@ -135,6 +137,7 @@ int readButtons() {
   return inputs;
 }
 
+
 //Toggles to a given color the leds matrix by comparing the previous inputs to the button being pressed.
 // returns how many times a change has happened.
 int toggleArray(uint32_t array[9], uint32_t value) {
@@ -148,6 +151,7 @@ int toggleArray(uint32_t array[9], uint32_t value) {
   }
   return changes;
 }
+
 
 // Updates the input array to select one of the buttons
 void selectMenu(int array[9]) {
@@ -231,6 +235,25 @@ void selectMenu(int array[9]) {
   strip.show();
 }
 
+void singleInput(int array[9]) {
+  int set = 0;
+  for (int i = 0; i < 9; i++) {
+    if (inputs[i] > prev_inputs[i]) {
+      // if there is a button push, initialize array to zero
+      for (int j = 0; j < 9; j++) {
+        array[j] = 0;
+      }
+
+      // add 1 if a set hasnt been done to others yet
+      if (set == 0) {
+        array[i]++;
+        set = 1;
+      }
+    }
+
+    prev_inputs[i] = inputs[i];
+  }
+}
 
 void loop() {
 
@@ -254,34 +277,43 @@ void loop() {
     // Enter Game Logic Here
 
     // Demo Code Can Remove.
-      while (!terminal(prev_inputs))
+      while (!terminal(play_board))
       {
-        if (player(prev_inputs) == 'X')
+        if (player(play_board) == 'X')
         {
         lcd.setCursor(3, 2);
         lcd.print("X's turn (AI)"); 
-        int move = bestMove(prev_inputs);
-        inputs[move] = 1;
-        toggleArray(colors, strip.Color(0, 255, 0));
+        int move = bestMove(play_board);
+        play_board[move] = X;
+        colors[move] = strip.Colors(0,255,0);
         displayMatrix(colors);
+        if (terminal(play_board)) break;
         }
         else 
         {
+          lcd.clear();
           readButtons();
+          int rythmInputs[9] = { 0 };
+          singleInput(rythmInputs);
           lcd.setCursor(3, 2);
-          lcd.print("O's turn"); 
+          lcd.print("O's turn");
+          
           for (int i = 0; i < 9; i++)
           {
-            if (inputs[i] && !prev_inputs) inputs[i] == 2;
+            if (rythmInputs[i] && !play_board[i]) 
+            {
+              play_board[i] == O;
+              colors[i] = strip.Colors(255,0,0);
+            }
             else
               lcd.print("Invalid move");
           }
-          toggleArray(colors, strip.Color(255, 0, 0));
+          
           displayMatrix(colors);
         }
       }
       displayMatrix(colors);
-      int winner = evaluate(prev_inputs);
+      int winner = evaluate(play_board);
       if (winner == 1) 
         lcd.print("X win");
       else if (winner == -1) 
