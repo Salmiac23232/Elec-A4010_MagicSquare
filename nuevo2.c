@@ -294,8 +294,14 @@ void loop() {
       displayMatrix(colors);
     break;
 
-    //Simon says
-    case 3:
+    //version for 2 players
+    case 3: 
+      //agregar la version para dos jugadores de la misma manera en la que se hizo lo otro.
+
+    break;
+
+    //version for a single player 
+    case 4:
     //Enter Game Logic Here
 
      // new round and pattern
