@@ -190,37 +190,37 @@ void selectMenu(int array[9]) {
         switch (i) {
           case 0:
             lcd.setCursor(3, 2);
-            lcd.print("Tic Tac Toe       "); 
+            lcd.print("Tic Tac Toe       ");
             Game = 1;
             break;
           case 1:
-          lcd.setCursor(3, 2);
-            lcd.print("Rythm Game       "); 
+            lcd.setCursor(3, 2);
+            lcd.print("Rythm Game       ");
             Game = 2;
             break;
           case 2:
-          lcd.setCursor(3, 2);
-            lcd.print("Simon Says      "); 
+            lcd.setCursor(3, 2);
+            lcd.print("Simon Says      ");
             Game = 3;
             break;
           case 3:
-          lcd.setCursor(3, 2);
-            lcd.print("Settings      "); 
+            lcd.setCursor(3, 2);
+            lcd.print("Settings      ");
             break;
           case 4:
-          lcd.setCursor(3, 2);
-            lcd.print("Credits    "); 
+            lcd.setCursor(3, 2);
+            lcd.print("Credits    ");
             break;
           default:
-                    lcd.setCursor(3, 2);
-            lcd.print("Coming Soon...    "); 
-          break;
+            lcd.setCursor(3, 2);
+            lcd.print("Coming Soon...    ");
+            break;
         }
         break;
       case 2:
         array[i] = 1;
         lcd.setCursor(3, 1);
-        lcd.print("             "); 
+        lcd.print("             ");
         strip.setPixelColor(i, strip.Color(255, 255, 255));
         strip.show();
         delay(250);
@@ -264,32 +264,29 @@ void loop() {
     return;
   }
 
-  // What game to play 
-  switch (Game){
+  // What game to play
+  switch (Game) {
 
     //No game, return to menu
     case 0:
       inMenu = 1;
-    break;
+      break;
 
     // Tic tac toe
-    case 1: 
-    // Enter Game Logic Here
-
-    // Demo Code Can Remove.
-      while (!terminal(play_board))
-      {
-        if (player(play_board) == 'X')
+    case 1:
+      while (!terminal(play_board)) {
+        if (player(play_board) == X)  // AI's turn
         {
-        lcd.setCursor(3, 2);
-        lcd.print("X's turn (AI)"); 
-        int move = bestMove(play_board);
-        play_board[move] = X;
-        colors[move] = strip.Colors(0,255,0);
-        displayMatrix(colors);
-        if (terminal(play_board)) break;
-        }
-        else 
+          lcd.setCursor(3, 2);
+
+          lcd.print("X's turn (machine)");
+          int move = bestMove(play_board);
+          play_board[move] = X;
+          colors[move] = strip.Color(0, 255, 0);
+          displayMatrix(colors);
+          if (terminal(play_board)) break;
+        } 
+        else if (player(play_board) == O)  // Player O's turn
         {
           lcd.clear();
           readButtons();
@@ -297,53 +294,73 @@ void loop() {
           singleInput(rythmInputs);
           lcd.setCursor(3, 2);
           lcd.print("O's turn");
-          
-          for (int i = 0; i < 9; i++)
-          {
-            if (rythmInputs[i] && !play_board[i]) 
-            {
-              play_board[i] == O;
-              colors[i] = strip.Colors(255,0,0);
+
+          bool invalidMove = false;  // Flag to check if the move is invalid
+
+          for (int i = 0; i < 9; i++) {
+            if (rythmInputs[i] && !play_board[i]) {
+              play_board[i] = O;  // Corrected assignment
+              colors[i] = strip.Color(255, 0, 0);
+              invalidMove = false;
+              break;  // Exit loop after the first valid move
+            } else if (rythmInputs[i] && play_board[i]) {
+              invalidMove = true;  // If the spot is already taken
             }
-            else
-              lcd.print("Invalid move");
           }
-          
+
+          if (invalidMove) {
+            lcd.clear();
+            lcd.setCursor(0, 2);
+            lcd.print("Invalid move");
+          }
+
           displayMatrix(colors);
         }
       }
+      lcd.clear();
       displayMatrix(colors);
       int winner = evaluate(play_board);
-      if (winner == 1) 
+      if (winner == 1)
+      {
+        lcd.setCursor(3, 2);
         lcd.print("X win");
-      else if (winner == -1) 
+      }
+      else if (winner == -1)
+      {
+        lcd.setCursor(3, 2);
         lcd.print("O win");
-      else 
+
+      }
+      else
+      {
+        lcd.setCursor(3, 2);
         lcd.print("Stalemate");
-    break;
+      }
+      delay(1000);
+      lcd.clear();
+      inMenu = 1;
+      break;
 
     // Rythm Game
-    case 2: 
-    // Enter Game Logic Here
+    case 2:
+      // Enter Game Logic Here
       readButtons();
       toggleArray(colors, strip.Color(255, 255, 0));
       displayMatrix(colors);
-    break;
+      break;
 
     //Simon says
     case 3:
-    //Enter Game Logic Here
+      //Enter Game Logic Here
 
-    //Demo Code, Can remove.
-    colorWipe(strip.Color(255, 0, 0), 20);
-    colorWipe(strip.Color(255, 255, 0), 20);
-    colorWipe(strip.Color(0, 255, 0), 20);
-    colorWipe(strip.Color(0, 255, 255), 20);
-    colorWipe(strip.Color(255, 255, 255), 20);
-    break;
+      //Demo Code, Can remove.
+      colorWipe(strip.Color(255, 0, 0), 20);
+      colorWipe(strip.Color(255, 255, 0), 20);
+      colorWipe(strip.Color(0, 255, 0), 20);
+      colorWipe(strip.Color(0, 255, 255), 20);
+      colorWipe(strip.Color(255, 255, 255), 20);
+      break;
   }
-
-
 }
 
 void colorWipe(uint32_t color, unsigned long wait) {
