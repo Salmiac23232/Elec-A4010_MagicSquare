@@ -26,7 +26,7 @@ LiquidCrystal_I2C lcd(0x27, 20, 4);
 uint32_t colors[9] = { 0 };  // This is the color matrix that the displayMatrix uses.
 int inputs[9] = { 0 };
 int prev_inputs[9] = { 0 };
-int play_board[9] = { 0 };
+
 
 // Fast Led Setup and Colors
 FastLED_NeoPixel<NUM_LEDS, DATA_PIN, NEO_GRB> strip;
@@ -274,6 +274,7 @@ void loop() {
 
     // Tic tac toe
     case 1:
+      int play_board[9] = { 0 };
       while (!terminal(play_board)) {
         if (player(play_board) == X)  // AI's turn
         {
