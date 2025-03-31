@@ -12,6 +12,11 @@ int correct_color = 0;
 int round = 0;
 
 
+int round2 = 0;
+int points_player1 = 0;
+int points_player2 = 0;
+
+
 //buttons
 const int buttonA = 8;
 const int buttonB = 9;
@@ -40,8 +45,6 @@ FastLED_NeoPixel<NUM_LEDS, DATA_PIN, NEO_GRB> strip;
 int inMenu = 1;
 int menu_Select[9] = { 0 };
 int Game = 0;
-
-
 
 void setup() {
 
@@ -205,14 +208,29 @@ void selectMenu(int array[9]) {
             lcd.print("Simon Says      "); 
             Game = 3;
             break;
+
           case 3:
+          lcd.setCursor(3, 2);
+            lcd.print("Speed Game      "); 
+            Game = 4;
+            break;
+
+          case 4:
+          lcd.setCursor(3, 2);
+            lcd.print("Multiplayer Game      "); 
+            Game = 5;
+            break;
+          
+          case 5:
           lcd.setCursor(3, 2);
             lcd.print("Settings      "); 
             break;
-          case 4:
+          
+          case 6:
           lcd.setCursor(3, 2);
             lcd.print("Credits    "); 
             break;
+          
           default:
                     lcd.setCursor(3, 2);
             lcd.print("Coming Soon...    "); 
@@ -259,6 +277,41 @@ void selectMenu(int array[9]) {
     }
 
 
+
+  void pattern2(){
+
+      uint32_t colors8 = strip.Color (255,0,0);//red
+      uint32_t player1 = strip.Color (0,255,0);//green
+      unit32_t player2 = strip.Color (0,0,255);//blue
+
+      
+      for (int i = 0; i < NUM_LEDS; i++) {
+        strip.setPixelColor(i, 0);  // turn off leds
+      }
+      
+      
+      for (int i = 0; i < NUM_LEDS; i++) {
+        strip.setPixelColor(i, colors8); //it goes through each led and assigns color red
+
+      }
+      player1 = random(0, NUM_LEDS);  // select random led to turn green
+      player2 = random(0, NUM_LEDS); // select random led to turn blue 
+
+      while (player1 == player2){
+        player2 = random (0, NUM_LEDS);// avoids getting the same color in one led 
+      }
+      
+      strip.setPixelColor(player1, colors8);
+      // here we select the player1 led back to red 
+      strip.setPixelColor(player2, colors8);
+      //select the player2 back to red
+      strip.show();
+    }
+
+
+
+
+
 void loop() {
 
   // After Boot Up, Select Game
@@ -294,15 +347,15 @@ void loop() {
       displayMatrix(colors);
     break;
 
-    //version for 2 players
-    case 3: 
-      //agregar la version para dos jugadores de la misma manera en la que se hizo lo otro.
+    // Simon Says 
+    case 3:
+      // Enter Game Logic Here
 
     break;
+    
 
-    //version for a single player 
-    case 4:
-    //Enter Game Logic Here
+    //Speed Game (1 player)
+    case 4: 
 
      // new round and pattern
         round++;
@@ -312,8 +365,10 @@ void loop() {
         lcd.print(round);
   
         pattern();  // shows pattern
+      
         
         bool botonpresionado = false;
+        int score = 0;
         while (!botonpresionado) {
           readButtons(); //function that assigns the values to the buttons 
         
@@ -321,12 +376,16 @@ void loop() {
             if (inputs[i] == LOW) {  
               if (i == correct) {
                 tone(speaker, 523, 500);  // correct sound (C)
+                score ++;
                 botonpresionado = true;  // next round
                 delay(500);  
               } else {
                 tone(speaker,440, 500);  // incorrect sound  (A)
                 lcd.clear();
                 lcd.setCursor(0, 0);
+                lcd.print("Score:");
+                lcd.print(score);
+                lcd.setCursor(0,1);
                 lcd.print("¡Game Over!");
                 delay(1000);
                 inMenu = 1;  //go back to menu
@@ -341,6 +400,68 @@ void loop() {
             break;
           }
 
+    // Multiplayer Game (2 players)
+  
+    case 5:
+    //Enter Game Logic Here
+    
+      //points_player1++;
+      //points_player2++;
+      // capaz hay que poner los points en cero denuevo aca? 
+      
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print("Player 1: ");
+      lcd.print(points_player1);
+      lcd.setCursor(1,0);
+      lcd.print("Player 2:");
+      lcd.print(point_player2);
+
+
+      pattern2();  // shows pattern
+      
+      while (round2 < 12) { 
+        bool botonpresionado = false;
+        while (!botonpresionado) {
+          readButtons(); //function that assigns the values to the buttons 
+
+          for (int i = 0; i < 9; i++) {
+            if (inputs[i] == LOW) {  
+              if (i == player1) {
+                tone(speaker, 523, 500);  // player1 sound (C)
+                botonpresionado = true;  // next round
+                points_player1++;
+                delay(500);  
+                break;}
+              if (i == player2){
+                tone(speaker,440, 500);  // player2 sound  (A)
+                botonpresionado = true; //next round 
+                points_player2++;
+                delay(500);
+                break;
+              }
+            }
+          }
+        }
+        round2++;
+      }
+      if (points_player1 > points_player2){
+        lcd.clear();
+        lcd.setCursor(1,0);
+        lcd.print("Player 1 Wins!");
+        delay(3000);
+      }
+      else {
+        lcd.clear();
+        lcd.setCursor(1,0);
+        lcd.print("Player 2 Wins!");
+        delay(3000);
+      }
+      lcd.clear();
+      inMenu = 1;  //go back to menu
+      return;
+  }
+
     //Demo Code, Can remove.
     colorWipe(strip.Color(255, 0, 0), 20);
     colorWipe(strip.Color(255, 255, 0), 20);
@@ -349,8 +470,6 @@ void loop() {
     colorWipe(strip.Color(255, 255, 255), 20);
     break;
   }
-
-
 }
 
 void colorWipe(uint32_t color, unsigned long wait) {
