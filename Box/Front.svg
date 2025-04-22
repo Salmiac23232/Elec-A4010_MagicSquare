@@ -24,15 +24,16 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="0.71891835"
-     inkscape:cx="338.70328"
-     inkscape:cy="712.18101"
-     inkscape:window-width="1142"
+     inkscape:zoom="2.0334082"
+     inkscape:cx="164.01036"
+     inkscape:cy="958.9811"
+     inkscape:window-width="1147"
      inkscape:window-height="1032"
-     inkscape:window-x="50"
-     inkscape:window-y="0"
+     inkscape:window-x="1376"
+     inkscape:window-y="207"
      inkscape:window-maximized="0"
-     inkscape:current-layer="layer1" />
+     inkscape:current-layer="layer1"
+     showgrid="false" />
   <defs
      id="defs1" />
   <g
@@ -1069,7 +1070,7 @@
          id="path969" />
     </g>
     <ellipse
-       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.458258;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.47211;stroke-dasharray:none;stroke-opacity:1"
        id="use986"
        cx="43.739201"
        cy="6.3960614"
@@ -1079,71 +1080,71 @@
        inkscape:tile-cy="216.7699"
        inkscape:tile-w="75.59055"
        inkscape:tile-h="75.59055"
-       rx="19.466717"
-       ry="19.466612" />
+       rx="20.055214"
+       ry="20.055105" />
     <use
        x="0"
        y="0"
        inkscape:tiled-clone-of="#use986"
        xlink:href="#use986"
-       transform="translate(2.4535316e-6,61.391486)"
+       transform="matrix(1.0302309,0,0,1.0302309,-1.3222764,61.198126)"
        id="use1099" />
     <use
        x="0"
        y="0"
        inkscape:tiled-clone-of="#use986"
        xlink:href="#use986"
-       transform="translate(2.4535316e-6,122.78297)"
+       transform="matrix(1.0302309,0,0,1.0302309,-1.3222764,122.58962)"
        id="use1100" />
     <use
        x="0"
        y="0"
        inkscape:tiled-clone-of="#use986"
        xlink:href="#use986"
-       transform="translate(61.391695)"
+       transform="matrix(1.0302309,0,0,1.0302309,60.069416,-0.19335918)"
        id="use1101" />
     <use
        x="0"
        y="0"
        inkscape:tiled-clone-of="#use986"
        xlink:href="#use986"
-       transform="translate(61.391692,61.391486)"
+       transform="matrix(1.0302309,0,0,1.0302309,60.069413,61.198126)"
        id="use1102" />
     <use
        x="0"
        y="0"
        inkscape:tiled-clone-of="#use986"
        xlink:href="#use986"
-       transform="translate(61.391692,122.78297)"
+       transform="matrix(1.0302309,0,0,1.0302309,60.069413,122.58962)"
        id="use1103" />
     <use
        x="0"
        y="0"
        inkscape:tiled-clone-of="#use986"
        xlink:href="#use986"
-       transform="translate(122.78339)"
+       transform="matrix(1.0302309,0,0,1.0302309,121.46112,-0.19335918)"
        id="use1104" />
     <use
        x="0"
        y="0"
        inkscape:tiled-clone-of="#use986"
        xlink:href="#use986"
-       transform="translate(122.78339,61.391486)"
+       transform="matrix(1.0302309,0,0,1.0302309,121.46112,61.198126)"
        id="use1105" />
     <use
        x="0"
        y="0"
        inkscape:tiled-clone-of="#use986"
        xlink:href="#use986"
-       transform="translate(122.78339,122.78297)"
+       transform="matrix(1.0302309,0,0,1.0302309,121.46112,122.58962)"
        id="use1106" />
     <rect
-       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.42889;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.433406;stroke-dasharray:none;stroke-opacity:1"
        id="rect1106"
-       width="39.57111"
-       height="96.571106"
-       x="26.180119"
-       y="177.82819" />
+       width="40.088596"
+       height="97.342606"
+       x="25.921375"
+       y="177.44243" />
     <circle
        style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.461581;stroke-dasharray:none;stroke-opacity:1"
        id="use1145"
