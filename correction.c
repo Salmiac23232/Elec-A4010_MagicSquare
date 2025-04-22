@@ -1,3 +1,4 @@
+
 #include <LiquidCrystal_I2C.h>
 #include <FastLED_NeoPixel.h>
 
@@ -202,16 +203,16 @@ void pattern() {
 }
 
 void pattern2() {
-  uint32_t rojo = strip.Color(255, 0, 0);
-  uint32_t verde = strip.Color(0, 255, 0);
+  uint32_t verde = strip.Color(255, 0, 0);
+  uint32_t Red = strip.Color(0, 255, 0);
   uint32_t azul = strip.Color(0, 0, 255);
 
   int player1 = random(0, NUM_LEDS);
   int player2 = random(0, NUM_LEDS);
   while (player1 == player2) player2 = random(0, NUM_LEDS);
 
-  for (int i = 0; i < NUM_LEDS; i++) strip.setPixelColor(i, rojo);
-  strip.setPixelColor(player1, verde);
+  for (int i = 0; i < NUM_LEDS; i++) strip.setPixelColor(i, verde);
+  strip.setPixelColor(player1, Red);
   strip.setPixelColor(player2, azul);
   strip.show();
 
@@ -255,27 +256,41 @@ void loop() {
       lcd.setCursor(0, 0);
       lcd.print("Round: ");
       lcd.print(ronda);
+
       pattern();
 
-      bool botonpresionado = false;
-      while (!botonpresionado) {
+      int score = 0;
+      int correctButton = correct_color;
+
+      bool Gamerunning = true;
+      
+
+      while (Gamerunning) {
         readButtons();
+        bool botonpresionado = false; 
+
         for (int i = 0; i < 9; i++) {
           if (inputs[i] == LOW) {
-            if (i == correct_color) {
+            if (i == correctButton) {
               tone(speaker, 523, 500);
               score++;
+              correctButton = random(0,NUM_LEDS);
+              pattern();
               botonpresionado = true;
-              delay(500);
+              delay(5000);
             } else {
               tone(speaker, 440, 500);
+              Gamerunning = false;
               lcd.clear();
               lcd.setCursor(0, 0);
               lcd.print("Score:");
               lcd.print(score);
-              lcd.setCursor(0, 1);
-              lcd.print("¡Game Over!");
+              delay(3000);
+              lcd.clear();
+              lcd.setCursor(1, 1);
+              lcd.print("Game Over!");
               delay(1000);
+              lcd.clear();
               score = 0;
               inMenu = 1;
               return;
@@ -292,10 +307,10 @@ void loop() {
       round2 = 0;
       lcd.clear();
       lcd.setCursor(0, 0);
-      lcd.print("Player 1: ");
+      lcd.print("Player 1(Red): ");
       lcd.print(points_player1);
       lcd.setCursor(0, 1);
-      lcd.print("Player 2: ");
+      lcd.print("Player 2(Blue): ");
       lcd.print(points_player2);
 
       pattern2();
@@ -310,14 +325,14 @@ void loop() {
                 tone(speaker, 523, 500);
                 points_player1++;
                 botonpresionado = true;
-                delay(500);
+                delay(1000);
                 break;
               }
               if (i == target_player2) {
                 tone(speaker, 440, 500);
                 points_player2++;
                 botonpresionado = true;
-                delay(500);
+                delay(1000);
                 break;
               }
             }
@@ -331,12 +346,22 @@ void loop() {
       if (points_player1 > points_player2) {
         lcd.setCursor(1, 0);
         lcd.print("Player 1 Wins!");
-      } else {
+        delay(2000);
+        lcd.clear();
+      }
+      else if (points_player1 < points_player2) {
         lcd.setCursor(1, 0);
         lcd.print("Player 2 Wins!");
+        delay(2000);
+        lcd.clear();
       }
-      delay(3000);
-
+      else {
+        lcd.setCursor(1, 0);
+        lcd.print("Tie!");
+        delay(2000);
+        lcd.clear();
+      }
+      delay(1000);
       points_player1 = 0;
       points_player2 = 0;
       inMenu = 1;
