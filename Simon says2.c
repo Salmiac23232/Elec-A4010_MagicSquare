@@ -281,6 +281,7 @@ void loop() {
         lcd.setCursor(3, 2);
         lcd.print("Simon says!      ");
         delay(1000);
+        displayMatrix(colors);
         randomSeed(analogRead(A0));
         currentLength = 1;
         simonSequence[0] = random(0, 9);
