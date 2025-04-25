@@ -24,27 +24,6 @@ const int button3 = 13;
 const int speaker = 3;
 
 
-// Colores para cada botón
-uint32_t buttonColors[9] = {
-  strip.Color(255, 0, 0),
-  strip.Color(0, 255, 0),
-  strip.Color(0, 0, 255),
-  strip.Color(255, 255, 0),
-  strip.Color(255, 0, 255),
-  strip.Color(0, 255, 255),
-  strip.Color(255, 165, 0),
-  strip.Color(128, 0, 128),
-  strip.Color(255, 255, 255)
-};
-
-// Simon Dice
-#define MAX_SEQUENCE 100
-int simonSequence[MAX_SEQUENCE];
-int currentLength = 0;
-int playerIndex = 0;
-bool playingSimon = false;
-unsigned long lastInputTime = 0;
-const unsigned long inputTimeout = 5000;
 
 
 // Songs
@@ -107,6 +86,27 @@ int inMenu = 1;
 int menu_Select[9] = { 0 };
 int Game = 0;
 
+// Colores para cada botón
+uint32_t buttonColors[9] = {
+  strip.Color(255, 0, 0),
+  strip.Color(0, 255, 0),
+  strip.Color(0, 0, 255),
+  strip.Color(255, 255, 0),
+  strip.Color(255, 0, 255),
+  strip.Color(0, 255, 255),
+  strip.Color(255, 165, 0),
+  strip.Color(128, 0, 128),
+  strip.Color(255, 255, 255)
+};
+
+// Simon Dice
+#define MAX_SEQUENCE 100
+int simonSequence[MAX_SEQUENCE];
+int currentLength = 0;
+int playerIndex = 0;
+bool playingSimon = false;
+unsigned long lastInputTime = 0;
+const unsigned long inputTimeout = 5000;
 
 
 
@@ -343,14 +343,21 @@ void selectMenu(int array[9]) {
             lcd.print("Lights Out      ");
             Game = 3;
             break;
+          
           case 3:
             lcd.setCursor(3, 2);
-            lcd.print("Settings      ");
+            lcd.print("Simon says      ");
+            Game = 4;
             break;
           case 4:
             lcd.setCursor(3, 2);
             lcd.print("Credits    ");
             break;
+          case 5:
+            lcd.setCursor(3, 2);
+            lcd.print("Settings    ");
+            break;
+          
           default:
             lcd.setCursor(3, 2);
             lcd.print("Coming Soon...    ");
@@ -755,7 +762,7 @@ void loop() {
         }
       }
       break;
-  }
+  
 }
 
 
