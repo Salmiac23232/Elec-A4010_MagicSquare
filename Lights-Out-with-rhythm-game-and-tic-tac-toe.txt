@@ -454,6 +454,76 @@ void setup() {
   pinMode(button3, INPUT);
 }
 
+
+
+void showSimonSequence() {
+  for (int i = 0; i < currentLength; i++) {
+    int index = simonSequence[i];
+    strip.setPixelColor(index, buttonColors[index]);
+    strip.show();
+    tone(speaker, 300 + index * 20, 300);
+    delay(400);
+    strip.setPixelColor(index, 0);
+    strip.show();
+    delay(200);
+  }
+}
+
+bool checkSimonInput() {
+  readButtons();
+  for (int i = 0; i < 9; i++) {
+    if (inputs[i] && !prev_inputs[i]) {
+      strip.setPixelColor(i, buttonColors[i]);
+      strip.show();
+      tone(speaker, 300 + i * 20, 200);
+      delay(300);
+      strip.setPixelColor(i, 0);
+      strip.show();
+      delay(100);
+
+      if (i != simonSequence[playerIndex]) {
+        lcd.setCursor(3, 2);
+        lcd.print("Game Over!     ");
+        tone(speaker, 200, 1000);
+        delay(2000);
+        currentLength = 0;
+        playerIndex = 0;
+        return false;
+      }
+
+      playerIndex++;
+      lastInputTime = millis();
+
+      if (playerIndex >= currentLength) {
+        delay(500);
+        playerIndex = 0;
+        simonSequence[currentLength++] = random(0, 9);
+        showSimonSequence();
+      }
+    }
+    prev_inputs[i] = inputs[i];
+  }
+
+  if (millis() - lastInputTime > inputTimeout) {
+    lcd.setCursor(3, 2);
+    lcd.print("Timeout!       ");
+    tone(speaker, 150, 1000);
+    delay(2000);
+    currentLength = 0;
+    playerIndex = 0;
+    return false;
+  }
+
+  return true;
+}
+
+
+
+
+
+
+
+
 void loop() {
   // Valikko-tila
   if (inMenu) {
@@ -641,8 +711,31 @@ void loop() {
     case 3:
       runLightsOutGame();
       break;
+
+    case 4:
+        if (!playingSimon) {
+        lcd.setCursor(3, 2);
+        lcd.print("Simon says!      ");
+        delay(1000);
+        displayMatrix(colors);
+        randomSeed(analogRead(A0));
+        currentLength = 1;
+        simonSequence[0] = random(0, 9);
+        playerIndex = 0;
+        showSimonSequence();
+        lastInputTime = millis();
+        playingSimon = true;
+      } else {
+        if (!checkSimonInput()) {
+          playingSimon = false;
+          delay(1000);
+          inMenu = 1;
+        }
+      }
+      break;
   }
 }
+
 
 void colorWipe(uint32_t color, unsigned long wait) {
   for (unsigned int i = 0; i < strip.numPixels(); i++) {
