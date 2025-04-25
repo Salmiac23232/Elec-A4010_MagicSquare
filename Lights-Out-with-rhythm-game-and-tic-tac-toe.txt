@@ -470,6 +470,7 @@ void loop() {
 
     // Tic Tac Toe
     case 1:
+    {
       uint32_t XColor = strip.Color(0, 0, 255);  // Example: Blue for Player X
       uint32_t OColor = strip.Color(255, 0, 0);  // Example: Red for Player O
       int play_board[9] = { 0 };
@@ -585,7 +586,6 @@ void loop() {
       }
       lcd.clear();
       displayMatrix(colors);
-      print_board(play_board);
       int winner = evaluate(play_board);
       if (winner == 1)
       {
@@ -606,7 +606,7 @@ void loop() {
       lcd.clear();
       inMenu = 1;
       break;
-
+    }
     // Rythm Game
     case 2:
       readButtons();
