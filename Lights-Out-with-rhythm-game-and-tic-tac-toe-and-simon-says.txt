@@ -761,10 +761,9 @@ void loop() {
           inMenu = 1;
         }
       }
-      break;
+        break;
   }
 }
-
 
 void colorWipe(uint32_t color, unsigned long wait) {
   for (unsigned int i = 0; i < strip.numPixels(); i++) {
