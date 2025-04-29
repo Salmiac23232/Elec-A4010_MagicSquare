@@ -444,6 +444,52 @@ void playSong(struct song* level) {
   }
 }
 
+//Tic Tac Toe function
+int* play(int play_board[], int kone, uint32_t colors[]) {
+  int cur_player = player(play_board);
+  uint32_t XColor = strip.Color(0, 0, 255);  // Example: Blue for Player X
+  uint32_t OColor = strip.Color(255, 0, 0);  // Example: Red for Player O
+  int pass = 0;
+  if (kone && cur_player == X) {
+    lcd.setCursor(3, 2);
+    lcd.print("X's turn(machine)");
+    delay(250);
+    int move = bestMove(play_board);
+    play_board[move] = X;
+    colors[move] = XColor;
+    lcd.clear();
+  } else if ((!kone && cur_player == X) || cur_player == O) {
+    int rythmInputs[9] = { 0 };
+    readButtons();
+    singleInput(rythmInputs);
+    lcd.setCursor(3, 2);
+    if (cur_player == X)
+      lcd.print("X's turn");
+    else if (cur_player == O)
+      lcd.print("O's turn");
+    for (int i = 0; i < 9; i++) {
+      if (rythmInputs[i] && !play_board[i]) {
+        if (cur_player == X) {
+          colors[i] = XColor;
+          play_board[i] = X;
+        } else if (cur_player == O) {
+          colors[i] = OColor;
+          play_board[i] = O;
+          lcd.clear();
+        }
+        pass = 1;
+        break;
+      } else if (rythmInputs[i] && play_board[i]) {
+        lcd.setCursor(3, 3);
+        lcd.print("Invalid move");
+        delay(750);
+        break;
+      }
+    }
+  }
+  displayMatrix(colors);
+  return play_board;
+}
 void setup() {
   Serial.begin(9600);
   strip.begin();
@@ -572,147 +618,57 @@ void loop() {
 
     // Tic Tac Toe
     case 1:
-    {
-      uint32_t XColor = strip.Color(0, 0, 255);  // Example: Blue for Player X
-      uint32_t OColor = strip.Color(255, 0, 0);  // Example: Red for Player O
-      int play_board[9] = { 0 };
-      int kone = 0;
-      lcd.clear();
-      lcd.setCursor(3, 0);
-      lcd.print("vs Human/Machine");
-      lcd.setCursor(3, 1);
-      lcd.print("0:Human 1:Machine");
-      int rythmInputs[9] = { 0 };
-      readButtons();
-      singleInput(rythmInputs);
-      int check1 = 0;
-      while (!rythmInputs[0] && !rythmInputs[1])
       {
+        int play_board[9] = { 0 };
+        int kone = 0;
+        int rythmInputs[9] = { 0 };
+        lcd.clear();
+        lcd.setCursor(3, 0);
+        lcd.print("vs Human/Machine");
+        lcd.setCursor(3, 2);
+        lcd.print("0:Human 1:Machine");
         readButtons();
         singleInput(rythmInputs);
-        if (rythmInputs[0])
-        {
-          check1 = 1;
-          break;
-        }
-        else if (rythmInputs[1])
-        {
-          kone = 1;
-          check1 = 1;
-          break;
-        }
-        else if (check1)
-        {
-          lcd.setCursor(3, 2);
-          lcd.print("Invalid input");
-        }
-      }
-      while (!terminal(play_board)) 
-      {
-        if (player(play_board) == X)  
-        {
-          if (kone)
-          {
-          lcd.clear();
-          lcd.setCursor(3, 2);
-          lcd.print("X's turn (machine)");
-          int move = bestMove(play_board);
-          play_board[move] = X;
-          colors[move] = XColor;
-          displayMatrix(colors);
-          if (terminal(play_board)) 
-            break;
-          }
-          else if (!kone)
-          {
-            lcd.clear();
-            readButtons();
-            int rythmInputs[9] = { 0 };
-            singleInput(rythmInputs);
-            lcd.setCursor(3, 2);
-            lcd.print("X's turn");
-            bool invalidMove = false;  // Flag to check if the move is invalid
-            for (int i = 0; i < 9; i++) 
-            {
-              if (rythmInputs[i] && !play_board[i]) 
-              {
-                play_board[i] = X;  // Corrected assignment
-                colors[i] = XColor;
-                invalidMove = false;
-                break;  // Exit loop after the first valid move
-              } 
-              else if (rythmInputs[i] && play_board[i]) 
-                invalidMove = true;  // If the spot is already taken
-            }
-            if (invalidMove) 
-            {
-              lcd.clear();
-              lcd.setCursor(0, 2);
-              lcd.print("Invalid move");
-            }
-            displayMatrix(colors);
-            if (terminal(play_board)) 
-              break;
-          }
-        }
-        else if (player(play_board) == O)  // Player O's turn
-        {
-          lcd.clear();
+        while (!rythmInputs[0] && !rythmInputs[1]) {
           readButtons();
-          int rythmInputs[9] = { 0 };
           singleInput(rythmInputs);
-          lcd.setCursor(3, 2);
-          lcd.print("O's turn");
-          bool invalidMove = false;  // Flag to check if the move is invalid
-          for (int i = 0; i < 9; i++) 
-          {
-            if (rythmInputs[i] && !play_board[i]) 
-            {
-              play_board[i] = O;  // Corrected assignment
-              colors[i] = OColor;
-              invalidMove = false;
-              break;  // Exit loop after the first valid move
-            } 
-            else if (rythmInputs[i] && play_board[i])
-              invalidMove = true;  // If the spot is already taken
-          }
-          if (invalidMove) {
-            lcd.clear();
-            lcd.setCursor(0, 2);
-            lcd.print("Invalid move");
-          }
-          displayMatrix(colors);
-          if (terminal(play_board)) 
+          if (rythmInputs[0])
             break;
+          else if (rythmInputs[1]) {
+            kone = 1;
+            break;
+          }
+          for (int i = 2; i < 9; i++) {
+            if (rythmInputs[i]) {
+              lcd.setCursor(3, 3);
+              lcd.print("Invalid input");
+              break;
+            }
+          }
         }
+        lcd.clear();
+        while (!terminal(play(play_board, kone, colors)))
+          continue;
+        lcd.clear();
+        int winner = evaluate(play_board);
+        if (winner == 1) {
+          lcd.setCursor(3, 2);
+          lcd.print("X win");
+        } else if (winner == -1) {
+          lcd.setCursor(3, 2);
+          lcd.print("O win");
+        } else {
+          lcd.setCursor(3, 2);
+          lcd.print("Stalemate");
+        }
+        delay(2000);
+        lcd.clear();
+        inMenu = 1;
+        for (int i = 0; i < 9; i++) {
+          colors[i] = strip.Color(0, 0, 0);
+        }
+        break;
       }
-      lcd.clear();
-      displayMatrix(colors);
-      int winner = evaluate(play_board);
-      if (winner == 1)
-      {
-        lcd.setCursor(3, 2);
-        lcd.print("X win");
-      }
-      else if (winner == -1)
-      {
-        lcd.setCursor(3, 2);
-        lcd.print("O win");
-      }
-      else
-      {
-        lcd.setCursor(3, 2);
-        lcd.print("Stalemate");
-      }
-      delay(1000);
-      lcd.clear();
-      inMenu = 1;
-      //prev_inputs[9] = {0};
-      for(int i = 0; i <9;i++){
-        colors[i] = strip.Color(0,0,0);
-      }
-      break;
-    }
     // Rythm Game
     case 2:
       readButtons();
