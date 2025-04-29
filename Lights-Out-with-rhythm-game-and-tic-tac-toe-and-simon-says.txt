@@ -352,15 +352,18 @@ void selectMenu(int array[9]) {
           case 4:
             lcd.setCursor(3, 2);
             lcd.print("Credits    ");
+            Game = 5;
             break;
           case 5:
             lcd.setCursor(3, 2);
             lcd.print("Settings    ");
+            Game = 6;
             break;
           
           default:
             lcd.setCursor(3, 2);
             lcd.print("Coming Soon...    ");
+            Game = 7;
             break;
         }
         break;
@@ -704,6 +707,10 @@ void loop() {
       delay(1000);
       lcd.clear();
       inMenu = 1;
+      //prev_inputs[9] = {0};
+      for(int i = 0; i <9;i++){
+        colors[i] = strip.Color(0,0,0);
+      }
       break;
     }
     // Rythm Game
@@ -762,6 +769,34 @@ void loop() {
         }
       }
         break;
+
+    case 5:
+      
+      lcd.clear();
+      lcd.setCursor (0,0);
+      lcd.print("Tic-Tac-Toe: Minh ");
+      lcd.setCursor (0,1);
+      lcd.print("Rythm Game: Mael ");
+      lcd.setCursor (0,2);
+      lcd.print("Lights Out: Rauno ");
+      lcd.setCursor (0,3);
+      lcd.print("Simon Says: Saimi ");
+      delay(8000);
+      lcd.clear();
+      inMenu = 1;
+      break;
+
+    case 6:
+      lcd.clear();
+      inMenu = 1;
+      break;
+    case 7:
+       lcd.clear();
+      inMenu = 1;
+      break;
+    
+      
+
   }
 }
 
