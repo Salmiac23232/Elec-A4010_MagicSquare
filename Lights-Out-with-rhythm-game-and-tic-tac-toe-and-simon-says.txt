@@ -449,7 +449,6 @@ int* play(int play_board[], int kone, uint32_t colors[]) {
   int cur_player = player(play_board);
   uint32_t XColor = strip.Color(0, 0, 255);  // Example: Blue for Player X
   uint32_t OColor = strip.Color(255, 0, 0);  // Example: Red for Player O
-  int pass = 0;
   if (kone && cur_player == X) {
     lcd.setCursor(3, 2);
     lcd.print("X's turn(machine)");
@@ -472,12 +471,12 @@ int* play(int play_board[], int kone, uint32_t colors[]) {
         if (cur_player == X) {
           colors[i] = XColor;
           play_board[i] = X;
+          lcd.clear();
         } else if (cur_player == O) {
           colors[i] = OColor;
           play_board[i] = O;
           lcd.clear();
         }
-        pass = 1;
         break;
       } else if (rythmInputs[i] && play_board[i]) {
         lcd.setCursor(3, 3);
