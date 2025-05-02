@@ -8,7 +8,6 @@
 #define BRIGHTNESS 200
 
 
-
 // Buttons
 const int buttonA = 8;
 const int buttonB = 9;
@@ -18,12 +17,8 @@ const int button1 = 11;
 const int button2 = 12;
 const int button3 = 13;
 
-
-
 // Speaker
 const int speaker = 3;
-
-
 
 
 // Songs
@@ -215,9 +210,6 @@ void runLightsOutGame() {
 
 
 // ---------- Loput järjestelmäkoodista ----------
-
-
-
 
 
 // writes value on selected pin and opposite on others. if select is ALL set all to value
@@ -455,6 +447,7 @@ int* play(int play_board[], int kone, uint32_t colors[]) {
     delay(250);
     int move = bestMove(play_board);
     play_board[move] = X;
+    tone(speaker, 262, 250);
     colors[move] = XColor;
     lcd.clear();
   } else if ((!kone && cur_player == X) || cur_player == O) {
@@ -468,17 +461,18 @@ int* play(int play_board[], int kone, uint32_t colors[]) {
       lcd.print("O's turn");
     for (int i = 0; i < 9; i++) {
       if (rythmInputs[i] && !play_board[i]) {
+        tone(speaker, 262, 250);
         if (cur_player == X) {
           colors[i] = XColor;
           play_board[i] = X;
-          lcd.clear();
         } else if (cur_player == O) {
           colors[i] = OColor;
           play_board[i] = O;
-          lcd.clear();
         }
+        lcd.clear();
         break;
       } else if (rythmInputs[i] && play_board[i]) {
+        tone(speaker, 200, 250);
         lcd.setCursor(3, 3);
         lcd.print("Invalid move");
         delay(750);
@@ -595,12 +589,6 @@ bool checkSimonInput() {
 }
 
 
-
-
-
-
-
-
 void loop() {
   // Valikko-tila
   if (inMenu) {
@@ -631,14 +619,18 @@ void loop() {
         while (!rythmInputs[0] && !rythmInputs[1]) {
           readButtons();
           singleInput(rythmInputs);
-          if (rythmInputs[0])
+          if (rythmInputs[0]){
+            tone(speaker, 330, 250);
             break;
+          }
           else if (rythmInputs[1]) {
             kone = 1;
+            tone(speaker, 330, 250);
             break;
           }
           for (int i = 2; i < 9; i++) {
             if (rythmInputs[i]) {
+              tone(speaker, 200, 250);
               lcd.setCursor(3, 3);
               lcd.print("Invalid input");
               break;
@@ -750,8 +742,6 @@ void loop() {
       inMenu = 1;
       break;
     
-      
-
   }
 }
 
