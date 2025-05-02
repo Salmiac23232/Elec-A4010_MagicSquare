@@ -4,7 +4,7 @@
 #define ALL 4
 #define DATA_PIN 2
 #define NUM_LEDS 9
-#define BRIGHTNESS 200
+#define BRIGHTNESS 100
 
 //buttons
 const int buttonA = 8;
@@ -33,7 +33,7 @@ int chart[] = {
 };
 
 int melody[] = {
-  C4, G3, G3, A3, G3, 0, B3, C4
+  NOTE_C4, NOTE_G3, NOTE_G3, NOTE_A3, NOTE_G3, 0, NOTE_B3, NOTE_C4
 };
 
 int noteDurations[] = {
@@ -44,22 +44,18 @@ struct song tutorial = {chart, melody, noteDurations, 8};
 
 // Level 2
 int chart2[] = {
-  /*1,1,2,3,3,2,1,1,2,3,2,1,2,3,3,1,2,3,3,
-  1,1,2,3,3,2,1,1,2,3,2,1,2,3,3,1,2,3*/
-  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+  1,1,2,3,3,5,7,7,8,9,9,5,1,3,9,7,1,5,5
 };
 
 int melody2[] = {
-  E4, B3, C4, D4, C4, B3, A3, A3, C4, E4, D4, C4, B3, C4, D4, E4, C4, A3, A3, 
-  D4, F4, A4, G4, F4, E4, C4, E4, D4, C4, B3, B3, C4, D4, E4, C4, A3, A3, 
+  NOTE_E4, NOTE_B3, NOTE_C4, NOTE_D4, NOTE_C4, NOTE_B3, NOTE_A3, NOTE_A3, NOTE_C4, NOTE_E4, NOTE_D4, NOTE_C4, NOTE_B3, NOTE_C4, NOTE_D4, NOTE_E4, NOTE_C4, NOTE_A3, NOTE_A3
 };
 
 int noteDurations2[] = {
-  4,8,8,4,8,8,4,8,8,4,8,8,6,16,4,4,4,4,2,
-  4,8,8,4,8,8,4,8,8,4,8,8,4,8,8,4,4,4,2
+  4,8,8,4,8,8,4,8,8,4,8,8,4,6,4,4,4,4,4
 };
 
-struct song tetris = {chart2, melody2, noteDurations2, 19+18};
+struct song tetris = {chart2, melody2, noteDurations2, 19};
 
 //LCD
 LiquidCrystal_I2C lcd(0x27, 20, 4);
@@ -297,12 +293,16 @@ void selectMenu(int array[9]) {
 
 
 // Show the incoming Note in yellow
-void telegraphNote(int placement) {
-
+void telegraphNote(int placement, int duration) {
+  int speed = duration / 255;
   if (placement) {
     uint32_t matrix[9] = { 0 };
-    matrix[placement - 1] = strip.Color(255, 255, 0);  // Yellow
-    displayMatrix(matrix);
+    for (int i = 0; i < 255; i++){
+          matrix[placement - 1] = strip.Color(i, i, 0);  // Yellow
+          displayMatrix(matrix);
+          delay(speed);
+    }
+
   } else {
     uint32_t clear[9] = { 0 };
     displayMatrix(clear);
@@ -312,6 +312,9 @@ void telegraphNote(int placement) {
 // Listens for input for given button for a duration in milliseconds, Returns one if captured input, return 0 if no input
 int listenForInput(int button, int duration) {
   unsigned long start = millis();
+  if (button == 0){
+    return 1;
+  }
 
   while ((millis() - start) < duration) {
 
@@ -335,12 +338,12 @@ int listenForInput(int button, int duration) {
 void playSong(struct song* level){
         int points = 0;
         for (int thisNote = 0; thisNote < level->size; thisNote++) {
-        int noteDuration = 5000 / level->noteDurations[thisNote];
+        int noteDuration = 2500 / level->noteDurations[thisNote];
         int pauseBetweenNotes = noteDuration * 1.30;
         uint32_t clear[9] = { 0 };
 
-        telegraphNote(level->chart[thisNote]);
-        int correct = listenForInput(level->chart[thisNote], pauseBetweenNotes / 2);
+        telegraphNote(level->chart[thisNote], (pauseBetweenNotes / 8));
+        int correct = listenForInput(level->chart[thisNote], (pauseBetweenNotes / 8)*3);
 
         uint32_t matrix[9] = { 0 };
 
