@@ -378,11 +378,16 @@ void selectMenu(int array[9]) {
 }
 
 // Show the incoming Note in yellow
-void telegraphNote(int placement) {
+void telegraphNote(int placement, int duration) {
+  int speed = duration / 255;
   if (placement) {
     uint32_t matrix[9] = { 0 };
-    matrix[placement - 1] = strip.Color(255, 255, 0);  // Keltainen
-    displayMatrix(matrix);
+    for (int i = 0; i < 255; i++){
+          matrix[placement - 1] = strip.Color(i, i, 0);  // Yellow
+          displayMatrix(matrix);
+          delay(speed);
+    }
+
   } else {
     uint32_t clear[9] = { 0 };
     displayMatrix(clear);
@@ -408,32 +413,33 @@ int listenForInput(int button, int duration) {
   return 0;
 }
 
-void playSong(struct song* level) {
-  int points = 0;
-  for (int thisNote = 0; thisNote < level->size; thisNote++) {
-    int noteDuration = 5000 / level->noteDurations[thisNote];
-    int pauseBetweenNotes = noteDuration * 1.30;
-    uint32_t clear[9] = { 0 };
+void playSong(struct song* level){
+        int points = 0;
+        for (int thisNote = 0; thisNote < level->size; thisNote++) {
+        int noteDuration = 5000 / level->noteDurations[thisNote];
+        int pauseBetweenNotes = noteDuration * 1.30;
+        uint32_t clear[9] = { 0 };
 
-    telegraphNote(level->chart[thisNote]);
-    int correct = listenForInput(level->chart[thisNote], pauseBetweenNotes / 2);
+        telegraphNote(level->chart[thisNote], (pauseBetweenNotes / 8));
+        int correct = listenForInput(level->chart[thisNote], (pauseBetweenNotes / 8)*3);
 
-    uint32_t matrix[9] = { 0 };
-    if (correct) {
-      matrix[level->chart[thisNote] - 1] = strip.Color(255, 0, 0);
-      displayMatrix(matrix);
-      tone(speaker, level->melody[thisNote], noteDuration);
-      points++;
-      lcd.setCursor(7, 2);
-      lcd.print(points);
-    } else {
-      matrix[level->chart[thisNote] - 1] = strip.Color(0, 255, 0);
-      displayMatrix(matrix);
-      tone(speaker, 62, noteDuration);
-    }
-    delay(pauseBetweenNotes / 2);
-    noTone(speaker);
-  }
+        uint32_t matrix[9] = { 0 };
+
+        if (correct) {
+          matrix[level->chart[thisNote] - 1] = strip.Color(255, 0, 0);  // Green
+          displayMatrix(matrix);
+          tone(speaker, level->melody[thisNote], noteDuration);
+          points++;
+          lcd.setCursor(7, 2);
+          lcd.print(points);
+        } else {
+          matrix[level->chart[thisNote] - 1] = strip.Color(0, 255, 0);  // Red
+          displayMatrix(matrix);
+          tone(speaker, 62, noteDuration);
+        }
+        delay(pauseBetweenNotes / 2);
+        noTone(speaker);
+      }
 }
 
 //Tic Tac Toe function
