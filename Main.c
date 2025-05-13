@@ -442,8 +442,9 @@ void playSong(struct song* level){
 //Tic Tac Toe function
 int* play(int play_board[], int kone, uint32_t colors[]) {
   int cur_player = player(play_board);
-  uint32_t XColor = strip.Color(0, 0, 255);  // Example: Blue for Player X
-  uint32_t OColor = strip.Color(255, 0, 0);  // Example: Red for Player O
+  uint32_t XColor = strip.Color(0, 0, 255);  // Pelaaja X on sininen
+  uint32_t OColor = strip.Color(255, 0, 0);  // Pelaaja O on punainen
+  //Kone tekee siirto
   if (kone && cur_player == X) {
     lcd.setCursor(3, 2);
     lcd.print("X's turn(machine)");
@@ -453,7 +454,9 @@ int* play(int play_board[], int kone, uint32_t colors[]) {
     tone(speaker, 262, 250);
     colors[move] = XColor;
     lcd.clear();
-  } else if ((!kone && cur_player == X) || cur_player == O) {
+  } 
+  //Ihminen tekee siirto
+  else if ((!kone && cur_player == X) || cur_player == O) {
     int rythmInputs[9] = { 0 };
     readButtons();
     singleInput(rythmInputs);
@@ -474,7 +477,9 @@ int* play(int play_board[], int kone, uint32_t colors[]) {
         }
         lcd.clear();
         break;
-      } else if (rythmInputs[i] && play_board[i]) {
+      } 
+      //Siirron tarkistus
+      else if (rythmInputs[i] && play_board[i]) {
         tone(speaker, 200, 250);
         lcd.setCursor(3, 3);
         lcd.print("Invalid move");
@@ -483,6 +488,7 @@ int* play(int play_board[], int kone, uint32_t colors[]) {
       }
     }
   }
+  //Näyttää pelin tilanne
   displayMatrix(colors);
   return play_board;
 }
@@ -619,6 +625,7 @@ void loop() {
         lcd.print("0:Human 1:Machine");
         readButtons();
         singleInput(rythmInputs);
+        //valitse ihmistä tai konetta vastaan
         while (!rythmInputs[0] && !rythmInputs[1]) {
           readButtons();
           singleInput(rythmInputs);
@@ -641,9 +648,11 @@ void loop() {
           }
         }
         lcd.clear();
+        //pelaa kunnes on voittaja tai tasapeli
         while (!terminal(play(play_board, kone, colors)))
           continue;
         lcd.clear();
+        //Näytölle ilmestyy voittajan nimi tai ilmoitus tasapelistä
         int winner = evaluate(play_board);
         if (winner == 1) {
           lcd.setCursor(3, 2);
@@ -658,6 +667,7 @@ void loop() {
         delay(2000);
         lcd.clear();
         inMenu = 1;
+        //Peli nollaa tilanteen ja palaa takaisin päävalikkoon
         for (int i = 0; i < 9; i++) {
           colors[i] = strip.Color(0, 0, 0);
         }
